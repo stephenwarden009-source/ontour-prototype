@@ -147,6 +147,6 @@ OnTour aims to become:
 
 ## Contact
 
-Project initiated by [Your Name / Company]
+Project initiated by Stephen Warden
 
 ---
