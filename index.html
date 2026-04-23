@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -244,21 +245,18 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);font-si
 <!-- ══ SCREEN: HOME ══ -->
 <div class="screen active" id="screen-home">
 
-  <div class="mission">
-    <div class="m-eye">Fan transparency · Live events app</div>
-    <div class="m-hed">The live events transparency app.</div>
-    <div class="m-bod"><strong>OnTour is a fan-facing app built to make the biggest onsales in the world understandable — before fans ever enter the queue.</strong></div>
-    <div class="m-bod" style="margin-top:10px">The live music industry doesn’t have a demand problem.</div>
-    <div class="m-bod" style="margin-top:10px">It has a messaging problem.</div>
-    <div class="m-bod" style="margin-top:10px">Fans experience superstar onsales as chaos, opacity and failure. In reality, these events behave more like the Super Bowl or Formula 1 than a normal retail transaction.</div>
-    <div class="m-bod" style="margin-top:10px">Massive global demand meets fixed supply. The outcomes feel extreme because they are extreme.</div>
-    <div class="m-bod" style="margin-top:10px"><strong>OnTour does not change ticketing.</strong> It explains the environment around it — tour scale, real demand, historical patterns and realistic odds — before the onsale begins.</div>
-    <div class="m-bod" style="margin-top:10px">For fans, each major tour is now a global event. The missing layer is not hype. It is clarity.</div>
-  </div>
-
-  <div style="margin:0 18px 18px;background:#1a1208;border-radius:10px;padding:16px 17px">
-    <div style="font-family:'Montserrat','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:400;color:rgba(255,255,255,0.92);line-height:1.7;">&ldquo;We need to bring down service fees, become much more transparent and regain trust from consumers.&rdquo;</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:10px;font-weight:700;letter-spacing:.06em;">&mdash; Michael Rapino, CEO, Live Nation</div>
+  <div class="mission" style="padding:18px 18px 10px">
+    <div class="m-eye" style="margin-bottom:4px">Fan transparency · Live events app</div>
+    <div class="m-bod" style="font-size:10px;color:var(--green);font-style:italic;margin-bottom:6px;opacity:.85;line-height:1.3;">Ticket Opportunity Intelligence™</div>
+    <div class="m-bod" style="font-weight:800;line-height:1.45;margin-bottom:8px;">
+  OnTour is a fan-facing app that makes the most competitive ticket onsales in the world understandable — before fans ever enter the queue.
+</div>
+    <div class="m-bod" style="margin-top:8px">The live music industry doesn’t have a demand problem.</div>
+    <div class="m-bod" style="margin-top:8px">Fans experience superstar onsales as chaos, opacity and failure.</div>
+    <div class="m-bod" style="margin-top:8px">In reality, these events behave more like the Super Bowl or Formula 1 than a normal retail transaction.</div>
+    <div class="m-bod" style="margin-top:8px">Massive global demand meets fixed supply.</div>
+    <div class="m-bod" style="margin-top:8px">The outcomes feel extreme because they are extreme.</div>
+    <div class="m-bod" style="margin-top:8px;font-weight:800;color:var(--text)">The problem is not demand.<br>The problem is understanding demand.</div>
   </div>
 
   <div class="divider"></div>
@@ -269,48 +267,53 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);font-si
       <div class="tc-info">
         <div class="tc-eye">App example · high demand tour</div>
         <div class="tc-name">Bruno Mars — 2026 Tour</div>
-        <div class="tc-meta">A major global tour tracked inside the app. Fans follow announcements, onsales, availability and demand pressure in one place.</div>
-        <div class="tc-pills">
-          <span class="tp tp-red">Massive demand</span>
-          <span class="tp tp-amber">High competition</span>
-          <span class="tp tp-blue">Tracked in app</span>
+        <div style="font-size:11px;color:var(--text2);font-style:italic;margin-bottom:6px;">2026 World Tour</div>
+        <div class="tc-meta" style="margin-bottom:8px">78 shows · expanding global tour</div>
+        <div style="font-size:20px;font-weight:800;color:var(--red);line-height:1.05;margin:0 0 8px;">~2–3:1 demand vs initial onsale volume</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div class="sc" style="background:var(--bg);padding:8px 9px;">
+            <div class="sv" style="font-size:15px;">4.8M+</div>
+            <div class="sl">estimated requests</div>
+          </div>
+          <div class="sc" style="background:var(--bg);padding:8px 9px;">
+            <div class="sv" style="font-size:15px;">2.1M</div>
+            <div class="sl">tix sold first day</div>
+          </div>
         </div>
-        <div style="margin-top:10px">
-          <button class="abt-btn" onclick="event.stopPropagation(); followTour('bruno-2026')">Follow Tour</button>
+        <div style="font-size:11px;color:var(--text2);line-height:1.45;margin-bottom:8px;">Tour expanding in response to demand.</div>
+        <div style="margin-top:8px">
+          <button class="abt-btn" id="followBtnBruno" data-follow-btn="bruno-2026" onclick="event.stopPropagation(); followTour('bruno-2026')">Follow Tour</button>
           <span id="followStatusBruno" style="margin-left:8px;font-size:11px;color:var(--text3);font-weight:700;"></span>
         </div>
       </div>
     </div>
   </div>
 
-  <div style="margin:10px 18px 18px;background:var(--bg2);border:.5px solid var(--border2);border-radius:10px;padding:14px 15px">
-    <div class="sg4">
-      <div class="sc"><div class="sl">Demand</div><div class="sv">Massive</div></div>
-      <div class="sc"><div class="sl">Shows</div><div class="sv">48</div></div>
-      <div class="sc"><div class="sl">Requests</div><div class="sv">4.8M+</div></div>
-      <div class="sc"><div class="sl">Avails</div><div class="sv">1.1M</div></div>
-    </div>
+  <div class="m-bod" style="font-weight:800;margin:12px 18px 4px;color:var(--text);">Following a tour ensures you’re informed about new shows and ticket opportunities first.</div>
+  <div class="m-bod" style="font-size:10px;color:var(--text3);margin:0 18px 10px;line-height:1.35;">Ticket Opportunity Intelligence™</div>
 
-    <div class="card">
-      <div class="ct">What fans would see</div>
-      <div class="cb"><strong>Shows announced and added:</strong> new markets, added nights, routing changes</div>
-      <div class="cb"><strong>Onsale timing:</strong> presales, general onsale windows, release patterns</div>
-      <div class="cb"><strong>Availability signals:</strong> where access is still possible vs closed</div>
-      <div class="cb"><strong>Odds:</strong> ticket requests vs available inventory</div>
-    </div>
-
-    <div class="verdict">
-      <div class="vl">Product insight</div>
-      <div class="vt">Fans don’t need more hype. They need a place to understand what they are walking into — and track it as it evolves.</div>
+  <div id="myToursFeed" class="card" style="margin:10px 18px 18px;display:none;">
+    <div class="ct">My Tours</div>
+    <div class="tl">
+      <div class="tl-r"><div class="tl-d">Now</div><div><div class="tl-e">+7 shows added since launch</div><div class="tl-t">Tour expanded from 71 announced dates in January to 78 shows announced by April.</div></div></div>
+      <div class="tl-r"><div class="tl-d">Watch</div><div><div class="tl-e">Added-show opportunities</div><div class="tl-t">New nights remain the clearest access path when first-wave demand is this intense.</div></div></div>
+      <div class="tl-r"><div class="tl-d">Best path</div><div><div class="tl-e">Presales + newly added dates</div><div class="tl-t">In a competitive reality marketplace, timing and visibility materially improve your chances.</div></div></div>
     </div>
   </div>
+
+  <div style="margin:0 18px 18px;background:#1a1208;border-radius:10px;padding:16px 17px">
+    <div style="font-family:'Montserrat','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:400;color:rgba(255,255,255,0.92);line-height:1.7;">&ldquo;We need to bring down service fees, become much more transparent and regain trust from consumers.&rdquo;</div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:10px;font-weight:700;letter-spacing:.06em;">&mdash; Michael Rapino, CEO, Live Nation</div>
+  </div>
+
+  <div class="m-bod" style="font-weight:800;margin:0 18px 18px;color:var(--text);">onTour does not change ticketing — but it will change the experience.</div>
 
   <div class="divider"></div>
   <div class="sec-hdr"><span class="sec-lbl">Six reasons fans are furious — and what the data actually shows</span></div>
   <div class="pillars" id="pillarsGrid"></div>
 
   <div class="divider"></div>
-  <div class="sec-hdr"><span class="sec-lbl">Featured tours</span></div>
+  <div class="sec-hdr"><span class="sec-lbl">Featured tours · Current and historical</span></div>
   <div class="tours-list" id="toursList"></div>
   <div style="height:14px"></div>
   <div class="divider"></div>
@@ -604,7 +607,7 @@ function renderPillars(){
 
 /* ═══════════ RENDER TOUR CARDS ═══════════ */
 function renderTourCards(){
-  document.getElementById('toursList').innerHTML=TOURS.map(t=>`
+  document.getElementById('toursList').innerHTML=TOURS.filter(t=>t.id!=='bruno-2026').map(t=>`
     <div class="tc" onclick="openTour('${t.id}')">
       <div class="tc-img" style="background-image:url('${t.img}');background-size:cover;background-position:center 35%;height:100px"></div>
       <div class="tc-info">
@@ -613,7 +616,7 @@ function renderTourCards(){
         <div class="tc-meta">${t.cMeta}</div>
         <div class="tc-pills">${t.pills.map(p=>`<span class="tp ${p.c}">${p.t}</span>`).join('')}</div>
         <div style="margin-top:10px">
-          <button class="abt-btn" onclick="event.stopPropagation(); followTour('${t.id}')">Follow Tour</button>
+          <button class="abt-btn" data-follow-btn="${t.id}" onclick="event.stopPropagation(); followTour('${t.id}')">Follow Tour</button>
           <span id="followStatus-${t.id}" style="margin-left:8px;font-size:11px;color:var(--text3);font-weight:700;"></span>
         </div>
       </div>
@@ -826,24 +829,25 @@ function lotTab(el,tab){
 function brunoTab(el,tab){
   const tabs={
     0:`<div class="cg">
-      <div class="cc"><div class="ce">Shows tracked</div><div class="cv">48</div><div class="cs">Global run</div></div>
+      <div class="cc"><div class="ce">Shows announced</div><div class="cv">78</div><div class="cs">Expanded global run</div></div>
       <div class="cc"><div class="ce">Markets</div><div class="cv">Global</div><div class="cs">Multi-market rollout</div></div>
       <div class="cc"><div class="ce">Demand level</div><div class="cv">Extreme</div><div class="cs">Major-tour conditions</div></div>
-      <div class="cc"><div class="ce">Tour status</div><div class="cv">Expanding</div><div class="cs">New dates still possible</div></div>
+      <div class="cc"><div class="ce">Tour status</div><div class="cv">Expanding</div><div class="cs">Added shows following first-wave demand</div></div>
     </div>
-    <div class="card"><div class="ct">What this page does</div><div class="cb">This is where fans track the tour as it evolves — not just dates, but demand, availability, onsale timing and real chances of getting in.</div></div>`,
+    <div class="card"><div class="ct">What this page does</div><div class="cb">This is where fans track the tour as it evolves — not just dates, but demand, availability, onsale timing and real ticket opportunities as they emerge.</div></div>
+    <div class="card"><div class="ct">Demand response</div><div class="cb">Initial onsales drove rapid sellouts and additional announcements. The tour expanded from <strong>71 announced dates in January to 78 shows announced by April</strong>, making added shows a core part of the access story.</div></div>`,
     1:`<div class="tl">
-      <div class="tl-r"><div class="tl-d">Now</div><div><div class="tl-e">3 new shows added</div><div class="tl-t">London, Los Angeles and São Paulo added after first-wave demand exceeded forecasts.</div></div></div>
-      <div class="tl-r"><div class="tl-d">Next</div><div><div class="tl-e">Presale windows opening</div><div class="tl-t">Fan club and partner presales staggered by market to spread demand.</div></div></div>
-      <div class="tl-r"><div class="tl-d">Watch</div><div><div class="tl-e">Late-release inventory</div><div class="tl-t">Production holds and final drops likely closer to show dates in selected cities.</div></div></div>
+      <div class="tl-r"><div class="tl-d">Now</div><div><div class="tl-e">+7 shows added since launch</div><div class="tl-t">Tour expanded from 71 announced dates in January to 78 shows announced by April across major markets.</div></div></div>
+      <div class="tl-r"><div class="tl-d">Watch</div><div><div class="tl-e">Added-show opportunities</div><div class="tl-t">New nights remain the clearest access path when first-wave demand is this intense.</div></div></div>
+      <div class="tl-r"><div class="tl-d">Next</div><div><div class="tl-e">Presales and late-release windows</div><div class="tl-t">Presales, newly announced dates and late-release inventory are where informed fans gain advantage.</div></div></div>
     </div>`,
     2:`<div class="cg">
-      <div class="cc"><div class="ce">Ticket requests</div><div class="cv">4.8M+</div><div class="cs">Across tracked markets</div></div>
-      <div class="cc"><div class="ce">Estimated avails</div><div class="cv">1.1M</div><div class="cs">Modeled supply</div></div>
-      <div class="cc"><div class="ce">Base odds</div><div class="cv">~23%</div><div class="cs">Before market variance</div></div>
-      <div class="cc"><div class="ce">Best path</div><div class="cv">Presale + added shows</div><div class="cs">Highest-probability route</div></div>
+      <div class="cc"><div class="ce">Estimated requests</div><div class="cv">4.8M+</div><div class="cs">Modeled demand signal</div></div>
+      <div class="cc"><div class="ce">Initial onsale sold</div><div class="cv">2.1M</div><div class="cs">Reported first-day volume</div></div>
+      <div class="cc"><div class="ce">Request-to-onsale ratio</div><div class="cv">~2–3:1</div><div class="cs">Not a guaranteed odds number</div></div>
+      <div class="cc"><div class="ce">Best path</div><div class="cv">Presales + added shows</div><div class="cs">Highest-probability route</div></div>
     </div>
-    <div class="card"><div class="ct">How to approach this tour</div><div class="cb">Most fans will not get tickets on first attempt. Odds improve through presales, added dates and late-release inventory windows.</div></div>`
+    <div class="card"><div class="ct">How to approach this tour</div><div class="cb">This is a competitive reality marketplace. Following the tour does not guarantee tickets — but it ensures you are informed about new shows and ticket opportunities first.</div></div>`
   };
   el.innerHTML=tabs[tab]||tabs[0];
 }
@@ -853,19 +857,29 @@ function openMyTour(id){
 }
 
 function followTour(id){
-  localStorage.setItem('followed_'+id,'1');
+  const key='followed_'+id;
+  const isOn=localStorage.getItem(key)==='1';
+  if(isOn) localStorage.removeItem(key);
+  else localStorage.setItem(key,'1');
   hydrateFollowStates();
 }
 
 function hydrateFollowStates(){
   const ids=['bruno-2026','styles-2026','styles-lot','swift-eras'];
   ids.forEach(id=>{
-    const el=document.getElementById(id==='bruno-2026'?'followStatusBruno':'followStatus-'+id);
-    if(el && localStorage.getItem('followed_'+id)==='1'){
-      el.textContent='Following';
-      el.style.color='var(--green)';
+    const on=localStorage.getItem('followed_'+id)==='1';
+    const span=document.getElementById(id==='bruno-2026'?'followStatusBruno':'followStatus-'+id);
+    const btn=document.querySelector('[data-follow-btn="'+id+'"]');
+    if(span){
+      span.textContent=on?'Following':'';
+      span.style.color=on?'var(--green)':'var(--text3)';
+    }
+    if(btn){
+      btn.textContent=on?'Following ✓':'Follow Tour';
     }
   });
+  const feed=document.getElementById('myToursFeed');
+  if(feed) feed.style.display=localStorage.getItem('followed_bruno-2026')==='1'?'block':'none';
 }
 
 /* ═══════════ ABOUT / INSTALL ═══════════ */
