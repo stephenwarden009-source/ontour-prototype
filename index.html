@@ -222,6 +222,22 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);font-si
 .inst-txt strong{color:var(--text);font-weight:700;display:block;margin-bottom:1px}
 .inst-cta{flex-shrink:0;background:var(--green);color:#fff;font-family:var(--sans);font-size:12px;font-weight:700;padding:8px 16px;border-radius:20px;border:none;cursor:pointer}
 .inst-x{flex-shrink:0;font-size:20px;color:var(--text3);background:none;border:none;cursor:pointer;padding:2px}
+  .inst-x{flex-shrink:0;font-size:20px;color:var(--text3);background:none;border:none;cursor:pointer;padding:2px}
+
+/* ADD THIS ↓ */
+.tc-img{
+  height:100px;
+  overflow:hidden;
+}
+
+.tc-img img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center 35%;
+  display:block;
+}
+</style>
 </style>
 </head>
 <body>
@@ -725,7 +741,9 @@ function renderTourCards(){
     .filter(t => t.id !== 'bruno-2026')
     .map(t => `
       <div class="tc" onclick="${t.link ? `window.location.href='${t.link}'` : `openTour('${t.id}')`}">
-        <div class="tc-img" style="background-image:url('${t.img}');background-size:cover;background-position:center 35%;height:100px"></div>
+        <div class="tc-img">
+  <img src="${t.img}" alt="${t.title}">
+</div>
         <div class="tc-info">
           <div class="tc-eye">${t.cEye}</div>
           <div class="tc-name">${t.title}</div>
