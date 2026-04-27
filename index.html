@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -479,10 +471,26 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);font-si
 @media(min-width:390px){.pitch-panels{grid-template-columns:1fr 1fr 1fr}.pitch-hook{font-size:32px}}
 
 
-/* REAL INDUSTRY / FAN MODE TOGGLE */
-.mode-shell{position:sticky;top:calc(48px + var(--st));z-index:95;display:flex;gap:6px;padding:10px 18px;background:rgba(240,235,225,0.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:.5px solid var(--border2)}
-.mode-btn{flex:1;font-family:var(--sans);font-size:11px;font-weight:800;border:.5px solid var(--border2);border-radius:999px;padding:8px 10px;background:var(--bg2);color:var(--text2);cursor:pointer;letter-spacing:.02em}
-.mode-btn.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* MODE TOGGLE SYSTEM */
+.mode-bar{position:sticky;top:0;z-index:200;background:var(--ink);padding-top:var(--st)}
+.mode-bar-inner{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;gap:10px}
+.mode-wordmark{display:flex;align-items:baseline;gap:0;cursor:pointer;text-decoration:none;flex-shrink:0}
+.mode-on{font-family:var(--sans);font-size:18px;font-weight:800;color:#4ede8a;line-height:1}
+.mode-tour{font-family:var(--sans);font-size:18px;font-weight:800;color:#fff;line-height:1;transform:skewX(-10deg);display:inline-block;margin-left:2px}
+.mode-toggle{display:flex;align-items:center;gap:2px;background:rgba(255,255,255,0.1);border-radius:20px;padding:3px;flex-shrink:0}
+.mode-btn{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.04em;padding:5px 12px;border-radius:16px;border:none;cursor:pointer;color:rgba(255,255,255,0.55);background:transparent;transition:all .2s;white-space:nowrap}
+.mode-btn.active{background:#fff;color:var(--ink)}
+.mode-about{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);background:none;border:none;cursor:pointer;font-family:var(--sans);flex-shrink:0;padding:2px 4px}
+.mode-about:hover{color:rgba(255,255,255,0.7)}
+.mode-bar .back-btn{color:rgba(255,255,255,0.72);font-weight:700;flex-shrink:0}
+.mode-bar .back-btn svg{color:rgba(255,255,255,0.72)}
+.mode-bar #hdrTag{display:none}
+.mode-context{background:rgba(255,255,255,0.07);border-top:.5px solid rgba(255,255,255,0.1);padding:7px 14px;font-size:11px;color:rgba(255,255,255,0.5);line-height:1.4;font-weight:400;display:none}
+.mode-context.visible{display:block}
+.mode-context strong{color:rgba(255,255,255,0.75);font-weight:700}
+body.mode-industry .app{border-left:.5px solid rgba(26,18,8,0.25);border-right:.5px solid rgba(26,18,8,0.25)}
+body.mode-industry .mode-bar{background:#1a1208}
+body.mode-industry .mode-on{color:#8bc4a2}
 
 [data-mode-section]{display:none}
 body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-section="fan"],body.mode-industry [data-mode-section="shared"],body.mode-fan [data-mode-section="shared"]{display:block}
@@ -499,37 +507,34 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 .fan-mission-copy strong{color:var(--text);font-weight:800}
 .reality-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin:13px 0 7px}
 
-@media(max-width:360px){.mode-shell{top:calc(46px + var(--st));padding:8px 12px}.mode-btn{font-size:10px;padding:7px 8px}}
+@media(max-width:360px){.mode-bar-inner{padding:8px 10px;gap:7px}.mode-btn{font-size:10px;padding:5px 8px}.mode-about{font-size:10px}.mode-on,.mode-tour{font-size:17px}}
 
 </style>
 </head>
 <body class="mode-industry">
 <div class="app">
 
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-inner">
+<!-- MODE BAR -->
+<div class="mode-bar" aria-label="onTour mode toggle">
+  <div class="mode-bar-inner">
     <button class="back-btn" id="backBtn" onclick="goHome()">
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="opacity:.6"><path d="M8.5 2L3.5 6.5L8.5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="opacity:.85"><path d="M8.5 2L3.5 6.5L8.5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Back
     </button>
-    <a class="wm" onclick="goHome()"><span class="wm-on">on</span><span class="wm-tour">Tour</span></a>
-    <div class="hdr-r">
-      <span class="hdr-tag" id="hdrTag">Beta</span>
-      <button class="abt-btn" onclick="openAbout()">About</button>
+    <a class="mode-wordmark" onclick="goHome()"><span class="mode-on">on</span><span class="mode-tour">Tour</span></a>
+    <div class="mode-toggle">
+      <button class="mode-btn active" type="button" data-mode-btn="industry" onclick="setMode('industry')">Industry</button>
+      <button class="mode-btn" type="button" data-mode-btn="fan" onclick="setMode('fan')">Fan App</button>
     </div>
+    <button class="mode-about" onclick="openAbout()">About</button>
+    <span id="hdrTag">Industry</span>
   </div>
 </div>
 
 <!-- ══ SCREEN: HOME ══ -->
 <div class="screen active" id="screen-home">
 
-<div class="mode-shell" aria-label="onTour mode toggle">
-  <button class="mode-btn active" type="button" data-mode-btn="industry" onclick="setMode('industry')">Industry Brief</button>
-  <button class="mode-btn" type="button" data-mode-btn="fan" onclick="setMode('fan')">Fan App Demo</button>
-</div>
-
-  <div data-mode-section="industry">
+<div data-mode-section="industry">
   <div class="pitch-hero">
     <div class="pitch-brandmark"><span class="wm-on">on</span><span class="wm-tour">Tour</span></div>
     <div class="pitch-cat">Tour Ticket Intelligence™</div>
@@ -548,7 +553,7 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     <div class="pitch-card">
       <div class="pitch-kicker">Industry context</div>
       <div class="pitch-title">Top Tours Behave Like Premium Sports Events <span style="white-space:nowrap;">(e.g. Super Bowl, F1)</span></div>
-      <div class="pitch-copy">Superstar on-sales trigger impossible-to-satisfy demand, leading to market-reality response that includes rage and sky-high secondary prices. Managing that reality has been a headache, black eye, and even existential threat to the biggest promoters in the business. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> was created to help fans understand and navigate the process, while offering the industry a new pressure release valve.</div>
+      <div class="pitch-copy">Superstar on-sales trigger impossible-to-satisfy demand, leading to market-reality response that includes rage and sky-high secondary prices. Managing that reality has been a headache, black eye, and even existential threat to the biggest promoters in the business. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> was created to help fans understand and navigate the process, while offering the industry a new pressure release valve — and a new way to put smaller shows by support acts and connected artists in front of engaged fans.</div>
       <div class="reality-label">Reality</div>
       <div class="pitch-list">
         <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Demand compresses instantly</div><div class="pitch-point-copy">Fans pile into the most obvious markets, creating spikes that feel chaotic and unfair.</div></div></div>
@@ -564,9 +569,7 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     <div class="hero-brand"><span class="wm-on">on</span><span class="wm-tour">Tour</span></div>
     <div class="hero-sub">Tour Ticket Intelligence™</div>
     <div class="fan-mission-title">Know the real demand before you enter the queue</div>
-    <div class="m-bod" style="margin-top:10px;">
-  <strong>onTour doesn’t change ticketing. It changes the experience.</strong>
-</div>
+    <div class="fan-mission-copy"><strong><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> doesn’t change ticketing. It changes the experience.</strong></div>
     <div class="fan-mission-copy">Most fans go home without tickets because they entered a long-shot competition with no data. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> publishes demand ratios, realistic access paths, and production reality at announcement — before the on-sale, before the crash. <strong>Not a ticketing platform. Not resale. Intelligence.</strong></div>
   </div>
   <div class="divider"></div>
@@ -651,10 +654,6 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
   <div class="sec-hdr"><span class="sec-lbl">Six reasons fans are furious — and what the data actually shows</span></div>
   <div class="pillars" id="pillarsGrid"></div>
 
-  <div class="divider"></div>
-  <div class="sec-hdr"><span class="sec-lbl">Featured Tours · Historical</span></div>
-  <div class="tours-list" id="toursList"></div>
-
   <div class="opp-home" id="ticketOpportunities">
     <div class="opp-kicker">Connected ecosystem</div>
     <div class="opp-title">Follow the ecosystem around a tour</div>
@@ -680,6 +679,10 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     <button class="opp-btn" onclick="openOpportunityTour('bruno-2026')">View Bruno related artists/shows</button>
   </div>
 
+  <div class="divider"></div>
+  <div class="sec-hdr"><span class="sec-lbl">Featured Tours · Historical</span></div>
+  <div class="tours-list" id="toursList"></div>
+
   </div>
 
   <div data-mode-section="industry">
@@ -687,7 +690,7 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     <div class="pitch-card">
       <div class="pitch-kicker">Music Tourism</div>
       <div class="pitch-title">When the local show is impossible, the world opens up</div>
-      <div class="pitch-copy">When local demand is impossible, global access paths become a real part of the fan decision.</div>
+      <div class="pitch-copy">When local demand is insane, global access paths become a real part of the fan decision.</div>
       <div class="pitch-panels">
         <div class="pitch-panel"><div class="pitch-panel-title">Local market</div><div class="pitch-panel-copy">Low odds · highest demand · fastest sellout pressure</div></div>
         <div class="pitch-panel"><div class="pitch-panel-title">Nearby market</div><div class="pitch-panel-copy">Moderate demand · better supply · realistic alternative</div></div>
@@ -1352,7 +1355,7 @@ function announcedShowsHTML(id){
   return `<div class="shows-card">
     <div class="shows-head"><div><div class="track-kicker">Tour Ticket Intelligence™</div><div class="shows-title">${d.title}</div><div class="shows-sub">${d.sub}</div><div class="shows-note">${d.note}</div></div></div>
     ${access ? `<div class="access-section-title">Current Access Paths</div><div class="access-list">${access}</div>` : ``}
-    ${secondary ? `<div class="access-section-title">Secondary Market Snapshot</div><div class="secondary-grid">${secondary}</div>` : ``}
+    ${secondary ? `<div class="access-section-title">Secondary Market Snapshot</div><div class="pattern-copy" style="margin:0 0 8px;">Don’t guess. Know what you’re walking into.</div><div class="secondary-grid">${secondary}</div>` : ``}
     <div class="access-section-title">Announced Shows + Calendar Gaps</div>
     <div class="show-list">${rows}</div>
     <div class="track-note">Why this matters: open days around announced runs can indicate where added dates, production holds, returned tickets, or late inventory releases may appear. This is a watch signal, not a guarantee.</div>
@@ -1475,13 +1478,14 @@ function bestShotHTML(id){
       <div><div class="bestshot-title">${d.title}</div><div class="bestshot-sub">${d.sub}</div>${d.dataNote ? `<div class="bestshot-data-note">${d.dataNote}</div>` : ``}</div>
       <div class="bestshot-phase">${d.phase}</div>
     </div>
+    <div class="bestshot-move"><div class="bestshot-label">Strategy</div><div class="bestshot-copy">Hope isn’t a strategy. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> is.</div><div class="bestshot-why">See where you actually have a shot — based on real supply, market dynamics, and access paths.</div></div>
     <div class="bestshot-grid">${rows}</div>
     <div class="bestshot-move"><div class="bestshot-label">Best move right now</div><div class="bestshot-copy">${d.move}</div></div>
     <div class="bestshot-why">${d.why}</div>
     <div class="pattern-block"><div class="pattern-label">${d.patternTitle || 'Based on previous tours'}</div><div class="pattern-copy">${d.pattern}</div>${patternList ? `<ul class="pattern-list">${patternList}</ul>` : ``}</div>
     ${status ? `<div class="bestshot-status"><div class="bestshot-status-title">Tour Status</div><div class="status-grid">${status}</div></div>` : ``}
     <div class="bestshot-actions"><button class="abt-btn primary-action" onclick="openAlertsModal('${id}')">Get Alerts</button></div>
-    <div class="bestshot-note">We’ll tell you when your chances improve, returned tickets appear, dates are added, or a stronger access path opens.</div>
+    <div class="bestshot-note">Stop relying on luck. We’ll tell you when your chances improve, returned tickets appear, dates are added, or a stronger access path opens.</div>
   </div>`;
 }
 
@@ -1583,7 +1587,7 @@ function togetherTab(el,tab){
       <div class="opp-detail-actions"><button class="abt-btn primary-action" onclick="openAlertsModal('styles-2026')">Get Alerts</button></div>
       <div class="opp-detail-reason" style="margin-top:6px;font-size:11px;color:var(--text3);">We’ll tell you when your chances improve.</div>
     </div>
-    <div class="track-note">onTour only surfaces related artists and paths that can be explained: support role, collaborator connection, city-specific tie, or added-show access path.</div>`;
+    <div class="track-note">If you missed the headline show, this is where the real options are. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> only surfaces related artists and paths that can be explained: support role, collaborator connection, city-specific tie, or added-show access path.</div>`;
     hydrateFollowStates();
     return;
   }
@@ -1773,7 +1777,7 @@ function brunoTab(el,tab){
       <div class="opp-detail-actions"><button class="abt-btn primary-action" onclick="openAlertsModal('bruno-2026')">Get Alerts</button></div>
       <div class="opp-detail-reason" style="margin-top:6px;font-size:11px;color:var(--text3);">We’ll tell you when your chances improve.</div>
     </div>
-    <div class="track-note">onTour only surfaces artists and paths that can be explained: support role, collaborator connection, genre adjacency, or added-show access path.</div>`
+    <div class="track-note">If you missed the headline show, this is where the real options are. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> only surfaces artists and paths that can be explained: support role, collaborator connection, genre adjacency, or added-show access path.</div>`
   };
   el.innerHTML=tabs[tab]||tabs[0];
   hydrateFollowStates();
