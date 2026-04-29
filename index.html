@@ -694,6 +694,25 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 .tb-disclaimer{font-size:10px;line-height:1.45;color:var(--text3);margin-top:9px}
 @media(max-width:360px){.tb-event{grid-template-columns:1fr}.tb-stat-grid{grid-template-columns:1fr}}
 
+/* PROTECT YOURSELF — FAN MODE */
+.protect-rail{margin:0 18px 18px;background:linear-gradient(180deg,var(--green2),var(--bg));border:.5px solid var(--greenb);border-radius:12px;padding:14px 15px}
+.protect-kicker{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:5px}
+.protect-title{font-family:var(--serif);font-size:21px;line-height:1.16;color:var(--text);font-weight:700;margin-bottom:7px}
+.protect-copy{font-size:12px;line-height:1.6;color:var(--text2);font-weight:400;margin-bottom:11px}.protect-copy strong{color:var(--text);font-weight:800}
+.protect-btn{width:100%;font-family:var(--sans);font-size:12px;font-weight:900;color:#fff;background:var(--ink);border:none;border-radius:20px;padding:9px 12px;cursor:pointer}
+.protect-context{background:var(--amber2);border:.5px solid var(--amberb);border-left:3px solid var(--amber);border-radius:10px;padding:11px 12px;margin:0 0 10px}
+.protect-context-title{font-size:12px;font-weight:900;color:var(--text);line-height:1.35;margin-bottom:4px}
+.protect-context-copy{font-size:11px;line-height:1.5;color:var(--text2)}
+.protect-hero{padding:21px 18px 16px;background:linear-gradient(180deg,var(--bg),var(--bg2));border-bottom:.5px solid var(--border2)}
+.protect-hero .shield{font-size:28px;margin-bottom:7px}.protect-page-title{font-family:var(--serif);font-size:29px;line-height:1.1;color:var(--text);font-weight:700;margin-bottom:8px}.protect-page-sub{font-size:13px;line-height:1.65;color:var(--text2)}.protect-page-sub strong{color:var(--text);font-weight:800}
+.protect-section{padding:14px 18px 90px}.protect-card{background:var(--bg2);border:.5px solid var(--border2);border-radius:12px;padding:13px 15px;margin-bottom:10px}.protect-card.hot{border-color:var(--greenb);background:linear-gradient(180deg,var(--green2),var(--bg2))}.protect-card.warn{border-color:var(--amberb);background:linear-gradient(180deg,var(--amber2),var(--bg2))}
+.protect-label{font-size:10px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:var(--green);margin-bottom:6px}.protect-card.warn .protect-label{color:var(--amber)}
+.protect-card-title{font-family:var(--serif);font-size:17px;line-height:1.22;color:var(--text);font-weight:700;margin-bottom:6px}.protect-card-copy{font-size:12px;line-height:1.62;color:var(--text2)}.protect-card-copy strong{color:var(--text);font-weight:800}
+.protect-link-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.protect-link{display:inline-flex;text-decoration:none;font-size:11px;font-weight:900;color:var(--green);background:var(--green2);border:.5px solid var(--greenb);border-radius:999px;padding:5px 9px}.protect-link.secondary{color:var(--blue);background:var(--blue2);border-color:var(--blueb)}
+.protect-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:7px}.protect-list li{font-size:12px;line-height:1.5;color:var(--text2);background:var(--bg);border:.5px solid var(--border2);border-radius:9px;padding:9px 10px}.protect-list strong{color:var(--text);font-weight:900}
+.protect-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.protect-mini{background:var(--bg);border:.5px solid var(--border2);border-radius:9px;padding:10px}.protect-mini-title{font-size:12px;font-weight:900;color:var(--text);line-height:1.25;margin-bottom:3px}.protect-mini-copy{font-size:11px;line-height:1.45;color:var(--text2)}
+@media(max-width:360px){.protect-mini-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body class="mode-industry">
@@ -855,6 +874,7 @@ Intelligence.<br>
   </div>
 
 </div>
+
   <div class="divider"></div>
   <div class="sec-hdr" id="app-demo"><span class="sec-lbl">Current tours</span></div>
   <div class="tours-list" id="currentToursList"></div>
@@ -934,9 +954,24 @@ Intelligence.<br>
   </div>
 
   <div data-mode-section="fan">
+
+  <div class="protect-rail">
+    <div class="protect-kicker">Fan protection</div>
+    <div class="protect-title">Protect yourself before the next move.</div>
+    <div class="protect-copy">If you don’t get tickets, the next move matters even more. Track rule changes, resale risks, and scam red flags before you spend real money.</div>
+    <button class="protect-btn" type="button" onclick="openProtect()">Protect Yourself</button>
+  </div>
+
   <div class="divider"></div>
   <div class="sec-hdr"><span class="sec-lbl">Six reasons fans are furious — and what the data actually shows</span></div>
   <div class="pillars" id="pillarsGrid"></div>
+
+  <div class="protect-rail">
+    <div class="protect-kicker">Buying risk</div>
+    <div class="protect-title">Low odds can push fans into bad decisions.</div>
+    <div class="protect-copy"><strong>Don’t rush into risky resale listings.</strong> Screenshots, PDFs, DMs and “transfer later” offers can leave you with a useless ticket.</div>
+    <button class="protect-btn" type="button" onclick="openProtect()">See scam alerts</button>
+  </div>
 
   <div class="opp-home" id="ticketOpportunities">
     <div class="opp-kicker">Connected ecosystem</div>
@@ -1077,6 +1112,57 @@ Intelligence.<br>
 
 </div>
 
+
+<!-- ══ SCREEN: PROTECT YOURSELF ══ -->
+<div class="screen" id="screen-protect">
+  <div class="protect-hero">
+    <div class="shield">🛡️</div>
+    <div class="protect-page-title">Protect Yourself</div>
+    <div class="protect-page-sub"><strong>Buying tickets shouldn’t mean risking your money.</strong><br>Know the rules, the risks, and the red flags before you buy.</div>
+  </div>
+
+  <div class="protect-section">
+    <div class="protect-card hot">
+      <div class="protect-label">What’s changing</div>
+      <div class="protect-card-title">Ontario caps resale at face value</div>
+      <div class="protect-card-copy">Ontario’s new fan-first ticket law bans resale above the original face value for events in the province. FIFA temporarily pulled Toronto World Cup resale listings while reworking its marketplace to comply.</div>
+      <div class="protect-link-row">
+        <a class="protect-link" href="https://www.reuters.com/sports/soccer/fifa-removes-toronto-world-cup-resale-tickets-after-new-price-cap-legislation-2026-04-28/" target="_blank" rel="noopener">Reuters</a>
+        <a class="protect-link secondary" href="https://toronto.citynews.ca/2026/04/28/toronto-world-cup-seats-off-fifa-resale-site-as-org-works-to-comply-with-price-cap/" target="_blank" rel="noopener">CityNews</a>
+      </div>
+    </div>
+
+    <div class="protect-card warn">
+      <div class="protect-label">Scam alerts</div>
+      <div class="protect-card-title">Red flags before you pay</div>
+      <ul class="protect-list">
+        <li><strong>Screenshots are not tickets.</strong> Barcodes can be copied, reused, or cancelled.</li>
+        <li><strong>PDFs can be duplicated.</strong> The first scan may win; everyone else loses.</li>
+        <li><strong>“Transfer later” is a major risk.</strong> Don’t pay before you understand when and how transfer opens.</li>
+        <li><strong>DM sales and e-transfers offer little protection.</strong> Once money moves, recovery can be difficult.</li>
+        <li><strong>Too-good-to-be-true pricing usually is.</strong> Extreme discounts are often bait.</li>
+      </ul>
+    </div>
+
+    <div class="protect-card">
+      <div class="protect-label">Buy safer</div>
+      <div class="protect-card-title">What to check before buying resale</div>
+      <div class="protect-mini-grid">
+        <div class="protect-mini"><div class="protect-mini-title">Guarantee</div><div class="protect-mini-copy">Use platforms that guarantee entry or buyer protection.</div></div>
+        <div class="protect-mini"><div class="protect-mini-title">Transfer method</div><div class="protect-mini-copy">Verify mobile transfer rules before sending payment.</div></div>
+        <div class="protect-mini"><div class="protect-mini-title">Jurisdiction</div><div class="protect-mini-copy">Rules can change by province, state, country, venue, or event.</div></div>
+        <div class="protect-mini"><div class="protect-mini-title">Source</div><div class="protect-mini-copy">Avoid off-platform deals when you cannot verify the seller.</div></div>
+      </div>
+    </div>
+
+    <div class="protect-card">
+      <div class="protect-label">onTour position</div>
+      <div class="protect-card-title">Intelligence before risk</div>
+      <div class="protect-card-copy"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> doesn’t sell tickets. It helps you understand your options — before you enter the queue, and before you make a risky move after missing out.</div>
+    </div>
+  </div>
+</div>
+
 <!-- ══ SCREEN: PILLAR DETAIL ══ -->
 <div class="screen" id="screen-pillar">
   <div id="pillarContent"></div>
@@ -1104,6 +1190,10 @@ Intelligence.<br>
       <div class="ratio-exp" id="ratioExp"></div>
       <div class="ratio-src" id="ratioSrc"></div>
     </div>
+  </div>
+  <div class="protect-context" style="margin:12px 16px 0;">
+    <div class="protect-context-title">Protect yourself after a miss.</div>
+    <div class="protect-context-copy">High-demand tours can push fans toward risky resale. Know the red flags before you pay. <button class="pfooter-btn" style="display:inline;font-size:11px;" onclick="openProtect()">Open Protect Yourself →</button></div>
   </div>
   <div class="tab-bar" id="tabBar"></div>
   <div class="tab-cnt" id="tabCnt"></div>
@@ -1354,11 +1444,12 @@ function showScreen(id){
   document.getElementById('screen-'+id).classList.add('active');
   curScreen=id;
   const bb=document.getElementById('backBtn');
-  document.getElementById('hdrTag').textContent=id==='home'?(document.body.classList.contains('mode-fan')?'Fan App':'Industry'):id==='tour'?'tour':'context';
+  document.getElementById('hdrTag').textContent=id==='home'?(document.body.classList.contains('mode-fan')?'Fan App':'Industry'):id==='tour'?'tour':id==='protect'?'Protect':'context';
   bb.style.display=id==='home'?'none':'flex';
   window.scrollTo(0,0);
 }
 function goHome(){showScreen('home');}
+function openProtect(){setMode('fan');showScreen('protect');}
 
 
 /* ═══════════ INDUSTRY / FAN MODE ═══════════ */
