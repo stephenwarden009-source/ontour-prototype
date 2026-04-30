@@ -713,6 +713,53 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 .protect-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.protect-mini{background:var(--bg);border:.5px solid var(--border2);border-radius:9px;padding:10px}.protect-mini-title{font-size:12px;font-weight:900;color:var(--text);line-height:1.25;margin-bottom:3px}.protect-mini-copy{font-size:11px;line-height:1.45;color:var(--text2)}
 @media(max-width:360px){.protect-mini-grid{grid-template-columns:1fr}}
 
+/* TOUR SIGNAL ENGINE */
+.signal-card{
+  background:var(--green2);
+  border:.5px solid var(--greenb);
+  border-left:3px solid var(--green);
+  border-radius:12px;
+  padding:13px 15px;
+  margin-bottom:10px;
+}
+
+.signal-kicker{
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--green);
+  margin-bottom:5px;
+}
+
+.signal-title{
+  font-family:var(--serif);
+  font-size:18px;
+  line-height:1.2;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:5px;
+}
+
+.signal-meta{
+  font-size:10px;
+  font-weight:800;
+  color:var(--text3);
+  margin-bottom:8px;
+}
+
+.signal-impact,
+.signal-action{
+  font-size:12px;
+  line-height:1.55;
+  color:var(--text2);
+  margin-top:6px;
+}
+
+.signal-action strong{
+  color:var(--text);
+}
+
 </style>
 </head>
 <body class="mode-industry">
@@ -1582,12 +1629,18 @@ function switchTab(i){
 /* ═══════════ TAB CONTENT ═══════════ */
 function renderTabContent(t,tab){
   const el=document.getElementById('tabCnt');
+
   if(t.id==='swift-eras') erasTab(el,tab);
   else if(t.id==='styles-2026') togetherTab(el,tab);
   else if(t.id==='bruno-2026') brunoTab(el,tab);
   else if(t.id==='rush-2026') rushTab(el,tab);
   else lotTab(el,tab);
+
+  if(tab===0){
+    el.innerHTML = renderTourSignal(t.id) + el.innerHTML;
+  }
 }
+
 
 function erasTab(el,tab){
   const tabs={
@@ -2450,15 +2503,46 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;setTim
 document.getElementById('instBtn').addEventListener('click',async()=>{if(!dp)return;dp.prompt();await dp.userChoice;dp=null;document.getElementById('instBanner').classList.add('hidden')});
 function dismissInst(){document.getElementById('instBanner').classList.add('hidden')}
 
+/* ═══════════ TOUR SIGNAL ENGINE ═══════════ */
+let TOUR_SIGNAL_DATA = {};
+
+async function loadTourSignals(){
+  try{
+    const res = await fetch('./data/tour-signals.json?v=' + Date.now());
+    if(!res.ok) throw new Error('No tour signals file found');
+    TOUR_SIGNAL_DATA = await res.json();
+  }catch(e){
+    TOUR_SIGNAL_DATA = {};
+  }
+}
+
+function renderTourSignal(tourId){
+  const signal = TOUR_SIGNAL_DATA[tourId];
+  if(!signal) return '';
+
+  return `
+    <div class="signal-card">
+      <div class="signal-kicker">Latest Tour Signal</div>
+      <div class="signal-title">${signal.headline}</div>
+      <div class="signal-meta">${signal.confidence} · ${signal.source} · Updated ${signal.updated}</div>
+      <div class="signal-impact">${signal.fanImpact}</div>
+      <div class="signal-action"><strong>Recommended:</strong> ${signal.recommendedAction}</div>
+    </div>
+  `;
+}
+
 /* ═══════════ INIT ═══════════ */
 let savedMode='industry';try{savedMode=localStorage.getItem('ontourMode') || 'industry';}catch(e){}setMode(savedMode);
-renderPillars();
-renderCurrentTourCards();
-renderTourCards();
-hydrateFollowStates();
-updateAlertStatusCard();
-document.getElementById('backBtn').style.display='none';
+loadTourSignals().then(()=>{
+  renderPillars();
+  renderCurrentTourCards();
+  renderTourCards();
+  hydrateFollowStates();
+  updateAlertStatusCard();
+  document.getElementById('backBtn').style.display='none';
+});
 if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+
 </script>
 </body>
 </html>
