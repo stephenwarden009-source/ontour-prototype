@@ -1,26 +1,26 @@
 {
   "styles-2026": {
-    "headline": "Ticketmaster tracking ready",
-    "source": "Ticketmaster Discovery API",
-    "confidence": "Monitoring",
-    "updated": "Today",
-    "fanImpact": "onTour is now prepared to detect new dates, onsale changes, and ticketing updates for this tour.",
-    "recommendedAction": "Track this tour and check official ticketing first before considering resale."
+    "headline": "Tour signal monitoring preview",
+    "source": "Prototype signal layer",
+    "confidence": "Demo",
+    "updated": "Preview",
+    "fanImpact": "This is where onTour will surface verified date, onsale, and ticketing changes once live tracking is connected.",
+    "recommendedAction": "Use this tour brief to compare markets, access paths, and official ticketing options."
   },
   "bruno-2026": {
-    "headline": "Ticketmaster tracking ready",
-    "source": "Ticketmaster Discovery API",
-    "confidence": "Monitoring",
-    "updated": "Today",
-    "fanImpact": "onTour is now prepared to detect new dates, onsale changes, and ticketing updates for this tour.",
-    "recommendedAction": "Track this tour and check official ticketing first before considering resale."
+    "headline": "Tour signal monitoring preview",
+    "source": "Prototype signal layer",
+    "confidence": "Demo",
+    "updated": "Preview",
+    "fanImpact": "This is where onTour will surface verified date, onsale, and ticketing changes once live tracking is connected.",
+    "recommendedAction": "Use this tour brief to compare markets, access paths, and official ticketing options."
   },
   "rush-2026": {
-    "headline": "Ticketmaster tracking ready",
-    "source": "Ticketmaster Discovery API",
-    "confidence": "Monitoring",
-    "updated": "Today",
-    "fanImpact": "onTour is now prepared to detect new dates, onsale changes, and ticketing updates for this tour.",
-    "recommendedAction": "Track this tour and monitor official ticketing for early signals before resale markets move."
+    "headline": "Tour signal monitoring preview",
+    "source": "Prototype signal layer",
+    "confidence": "Demo",
+    "updated": "Preview",
+    "fanImpact": "This is where onTour will surface verified date, onsale, and ticketing changes once live tracking is connected.",
+    "recommendedAction": "Use this tour brief to compare markets, access paths, and official ticketing options."
   }
 }
