@@ -1,1 +1,26 @@
-
+{
+  "styles-2026": {
+    "headline": "Ticketmaster tracking ready",
+    "source": "Ticketmaster Discovery API",
+    "confidence": "Monitoring",
+    "updated": "Today",
+    "fanImpact": "onTour is now prepared to detect new dates, onsale changes, and ticketing updates for this tour.",
+    "recommendedAction": "Track this tour and check official ticketing first before considering resale."
+  },
+  "bruno-2026": {
+    "headline": "Ticketmaster tracking ready",
+    "source": "Ticketmaster Discovery API",
+    "confidence": "Monitoring",
+    "updated": "Today",
+    "fanImpact": "onTour is now prepared to detect new dates, onsale changes, and ticketing updates for this tour.",
+    "recommendedAction": "Track this tour and check official ticketing first before considering resale."
+  },
+  "rush-2026": {
+    "headline": "Ticketmaster tracking ready",
+    "source": "Ticketmaster Discovery API",
+    "confidence": "Monitoring",
+    "updated": "Today",
+    "fanImpact": "onTour is now prepared to detect new dates, onsale changes, and ticketing updates for this tour.",
+    "recommendedAction": "Track this tour and monitor official ticketing for early signals before resale markets move."
+  }
+}
