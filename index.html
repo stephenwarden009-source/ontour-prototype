@@ -760,6 +760,22 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
   color:var(--text);
 }
 
+.related-local-card{
+  background:var(--bg2);
+  border:.5px solid var(--blueb);
+  border-left:3px solid var(--blue);
+  border-radius:12px;
+  padding:13px 15px;
+  margin-bottom:10px;
+}
+.related-local-card .signal-kicker{color:var(--blue)}
+.related-event-list{display:flex;flex-direction:column;gap:7px;margin-top:9px}
+.related-event-row{background:var(--bg);border:.5px solid var(--border2);border-radius:9px;padding:9px 10px}
+.related-event-name{font-size:12px;font-weight:900;color:var(--text);line-height:1.3}
+.related-event-meta{font-size:10px;line-height:1.45;color:var(--text3);margin-top:3px}
+.related-event-note{font-size:11px;line-height:1.5;color:var(--text2);margin-top:5px}
+.related-event-actions{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
+
 </style>
 </head>
 <body class="mode-industry">
@@ -934,9 +950,9 @@ Intelligence.<br>
         <div class="tc-meta">78 shows · expanding global tour</div>
         <div class="tour-card-actions">
           <button class="abt-btn primary-action" onclick="event.stopPropagation(); openTour('bruno-2026')">View Tour Brief</button>
-          <button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openItinerary('bruno-2026')">Itinerary</button>
-          <button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openOpportunityTour('bruno-2026')">Track This Tour</button>
-          <button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openTourSignal('bruno-2026')">Latest Signal</button>
+          <button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openTourSignal('bruno-2026')">Latest Official Signal</button>
+          <button class="abt-btn alert-action" onclick="event.stopPropagation(); openAlertsModal('bruno-2026')">Get Alerts</button>
+          <button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openLocalFanEvents('bruno-2026')">Local Fan Events</button>
         </div>
         <div id="followStatusBruno" class="follow-note"></div>
       </div>
@@ -1317,8 +1333,8 @@ Intelligence.<br>
 <div class="alert-ov" id="alertOv" aria-hidden="true">
   <div class="alert-panel">
     <div class="alert-kicker">Tour Ticket Intelligence™</div>
-    <div class="alert-title">Choose how widely onTour should watch</div>
-    <div class="alert-copy" id="alertCopy">Follow tours and related artists in the app. Text alerts are strictly opt-in. Choose whether onTour watches near you, travel-worthy dates, or every major tour update.</div>
+    <div class="alert-title">Get free tour intel and alerts</div>
+    <div class="alert-copy" id="alertCopy">Save your home market so onTour can separate global official tour intel from local fan events near you. Alerts are strictly opt-in.</div>
     <div class="alert-form">
       <div class="alert-section">
         <div class="alert-label">Alert scope</div>
@@ -1337,6 +1353,7 @@ Intelligence.<br>
       </div>
       <div class="alert-section">
         <div class="alert-label">Home market</div>
+        <input class="alert-input" id="alertName" placeholder="First name — optional">
         <input class="alert-input" id="alertCity" placeholder="City, province/state — e.g. Winnipeg, MB">
       </div>
       <div class="alert-section">
@@ -1345,11 +1362,12 @@ Intelligence.<br>
         <input class="alert-input" id="alertTravelMarkets" placeholder="Optional — e.g. Toronto, Vegas, London">
       </div>
       <div class="alert-section">
-        <div class="alert-label">Text alerts</div>
-        <input class="alert-input" id="alertPhone" placeholder="Mobile number — e.g. +1 204 555 0123" inputmode="tel">
+        <div class="alert-label">Email or text alerts</div>
+        <input class="alert-input" id="alertEmail" placeholder="Email — e.g. fan@example.com" inputmode="email">
+        <input class="alert-input" id="alertPhone" placeholder="Mobile number — optional for texts" inputmode="tel">
         <label class="alert-consent">
           <input type="checkbox" id="alertConsent">
-          <span>I agree to receive occasional text alerts from onTour about followed tours, related artists, added shows, and tour updates based on my selected alert scope. Message/data rates may apply. Reply STOP to unsubscribe. This prototype stores the preference locally until SMS delivery is connected.</span>
+          <span>I agree to receive occasional opt-in alerts from onTour about followed tours, official ticket opportunities, local fan events, added shows, and tour updates based on my selected scope. Message/data rates may apply for texts. Reply STOP to unsubscribe.</span>
         </label>
       </div>
       <div class="alert-error" id="alertError"></div>
@@ -1526,9 +1544,9 @@ function tourCardHTML(t){
         ${(t.pills||[]).length ? `<div class="tc-pills">${t.pills.map(p => `<span class="tp ${p.c}">${p.t}</span>`).join('')}</div>` : ''}
         <div class="tour-card-actions">
           <button class="abt-btn primary-action" onclick="event.stopPropagation(); openTour('${t.id}')">View Tour Brief</button>
-          ${['styles-2026','rush-2026'].includes(t.id) ? `<button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openItinerary('${t.id}')">Itinerary</button>` : ''}
-          ${['styles-2026','rush-2026'].includes(t.id) ? `<button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openOpportunityTour('${t.id}')">Track This Tour</button>` : ''}
-          ${['styles-2026','rush-2026'].includes(t.id) ? `<button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openTourSignal('${t.id}')">Latest Signal</button>` : ''}
+          ${['styles-2026','rush-2026'].includes(t.id) ? `<button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openTourSignal('${t.id}')">Latest Official Signal</button>` : ''}
+          ${['styles-2026','rush-2026'].includes(t.id) ? `<button class="abt-btn alert-action" onclick="event.stopPropagation(); openAlertsModal('${t.id}')">Get Alerts</button>` : ''}
+          ${['styles-2026','rush-2026'].includes(t.id) ? `<button class="abt-btn opportunity-action" onclick="event.stopPropagation(); openLocalFanEvents('${t.id}')">Local Fan Events</button>` : ''}
         </div>
         <div id="followStatus-${t.id}" class="follow-note"></div>
       </div>
@@ -1615,6 +1633,21 @@ function openTourSignal(id){
     const signal=document.getElementById('tourSignalCard');
     if(signal) signal.scrollIntoView({behavior:'smooth',block:'start'});
   },120);
+}
+
+function openLocalFanEvents(id){
+  openTour(id);
+  curTab=0;
+  const t=TOURS.find(x=>x.id===id);
+  if(t){
+    renderTabs(t);
+    renderTabContent(t,0);
+  }
+  setTimeout(()=>{
+    const card=document.getElementById('localFanEventsCard');
+    if(card) card.scrollIntoView({behavior:'smooth',block:'start'});
+    if(!localStorage.getItem('alert_city')) openAlertsModal(id);
+  },160);
 }
 
 function renderTabs(t){
@@ -2415,14 +2448,18 @@ function openAlertsModal(followId){
   const ov=document.getElementById('alertOv');
   if(!ov) return;
   if(followId) localStorage.setItem('last_alert_follow', followId);
+  const name=document.getElementById('alertName');
   const city=document.getElementById('alertCity');
+  const email=document.getElementById('alertEmail');
   const phone=document.getElementById('alertPhone');
   const travel=document.getElementById('alertTravelMarkets');
   const err=document.getElementById('alertError');
   const scope=localStorage.getItem('alert_scope') || 'travel';
   const scopeInput=document.querySelector('input[name="alertScope"][value="'+scope+'"]');
   if(scopeInput) scopeInput.checked=true;
+  if(name && localStorage.getItem('alert_name')) name.value=localStorage.getItem('alert_name');
   if(city && localStorage.getItem('alert_city')) city.value=localStorage.getItem('alert_city');
+  if(email && localStorage.getItem('alert_email')) email.value=localStorage.getItem('alert_email');
   if(phone && localStorage.getItem('alert_phone')) phone.value=localStorage.getItem('alert_phone');
   if(travel && localStorage.getItem('alert_travel_markets')) travel.value=localStorage.getItem('alert_travel_markets');
   if(err) err.textContent='';
@@ -2438,17 +2475,21 @@ function closeAlertsModal(){
 }
 
 function saveAlertOptIn(){
+  const name=(document.getElementById('alertName')?.value||'').trim();
   const city=(document.getElementById('alertCity')?.value||'').trim();
+  const email=(document.getElementById('alertEmail')?.value||'').trim();
   const phone=(document.getElementById('alertPhone')?.value||'').trim();
   const travel=(document.getElementById('alertTravelMarkets')?.value||'').trim();
   const scope=(document.querySelector('input[name="alertScope"]:checked')?.value||'travel');
   const consent=document.getElementById('alertConsent')?.checked;
   const err=document.getElementById('alertError');
-  if(!city || !phone || !consent){
-    if(err) err.textContent='Please add a home market, mobile number, and consent before enabling text alerts.';
+  if(!city || (!email && !phone) || !consent){
+    if(err) err.textContent='Please add a home market, email or mobile number, and consent before enabling alerts.';
     return;
   }
+  localStorage.setItem('alert_name',name);
   localStorage.setItem('alert_city',city);
+  localStorage.setItem('alert_email',email);
   localStorage.setItem('alert_phone',phone);
   localStorage.setItem('alert_scope',scope);
   localStorage.setItem('alert_travel_markets',travel);
@@ -2457,6 +2498,7 @@ function saveAlertOptIn(){
   closeAlertsModal();
   updateAlertStatusCard();
   showToast('Alerts on',getAlertScopeLabel(scope)+': '+getAlertScopeBody(scope,city,travel));
+  if(typeof hydrateTicketmasterSignals === 'function') hydrateTicketmasterSignals();
 }
 
 function followTour(id){
@@ -2527,9 +2569,14 @@ function formatSignalDate(dateStr){
   }
 }
 
+function escapeHTML(value){
+  return String(value || '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+}
+
 function normalizeTicketmasterEvent(e){
   const venue = e?._embedded?.venues?.[0] || {};
   const attractionNames = (e?._embedded?.attractions || []).map(a => a.name || '').filter(Boolean);
+  const classifications = (e?.classifications || []).map(c => [c.segment?.name,c.genre?.name,c.subGenre?.name,c.type?.name,c.subType?.name].filter(Boolean).join(' ')).filter(Boolean);
   return {
     id: e?.id || '',
     name: e?.name || 'Untitled event',
@@ -2540,22 +2587,55 @@ function normalizeTicketmasterEvent(e){
     state: venue.state?.stateCode || venue.country?.countryCode || '',
     status: e?.dates?.status?.code || 'status unknown',
     url: e?.url || '',
-    attractions: attractionNames
+    attractions: attractionNames,
+    classifications
   };
 }
 
-function isRelevantTicketmasterEvent(event, keyword){
-  const needle = (keyword || '').toLowerCase();
-  if(!needle) return true;
-  const haystack = [event.name, event.venue, event.city, ...(event.attractions || [])]
-    .join(' ')
-    .toLowerCase();
+function compactArtistKey(keyword){
+  return String(keyword || '').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+}
 
+function isNoiseTicketmasterEvent(event){
+  const text = [event.name,event.venue,...(event.attractions||[]),...(event.classifications||[])].join(' ').toLowerCase();
+  const noisy = ['tribute','tributes','dance night','club night','party','dj','djs','brunch','drag','karaoke','sing along','singalong','candlelight','orchestra tribute','experience','impersonator','look alike','lookalike','cover band','vs.',' versus ','night:','night -','after party','afterparty'];
+  return noisy.some(term => text.includes(term));
+}
+
+function isRelevantTicketmasterEvent(event, keyword){
+  const needle = compactArtistKey(keyword);
+  if(!needle) return true;
+  const haystack = compactArtistKey([event.name, event.venue, event.city, ...(event.attractions || [])].join(' '));
   return needle.split(/\s+/).every(part => haystack.includes(part));
 }
 
-async function fetchTicketmasterEvents(keyword = 'Harry Styles'){
-  const url = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&keyword=${encodeURIComponent(keyword)}&classificationName=music&sort=date,asc&size=20`;
+function isOfficialTicketmasterEvent(event, keyword){
+  if(!isRelevantTicketmasterEvent(event, keyword)) return false;
+  if(isNoiseTicketmasterEvent(event)) return false;
+  const exact = compactArtistKey(keyword);
+  const attractionExact = (event.attractions || []).some(a => compactArtistKey(a) === exact);
+  const nameExactish = compactArtistKey(event.name).startsWith(exact);
+  return attractionExact || nameExactish;
+}
+
+function isRelatedTicketmasterEvent(event, keyword){
+  return isRelevantTicketmasterEvent(event, keyword) && !isOfficialTicketmasterEvent(event, keyword);
+}
+
+function getHomeCityOnly(){
+  return (localStorage.getItem('alert_city') || '').split(',')[0].trim();
+}
+
+async function fetchTicketmasterEvents(keyword = 'Harry Styles', opts = {}){
+  const params = new URLSearchParams({
+    apikey:TICKETMASTER_API_KEY,
+    keyword,
+    classificationName:'music',
+    sort:'date,asc',
+    size:String(opts.size || 40)
+  });
+  if(opts.city) params.set('city', opts.city);
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?${params.toString()}`;
 
   try{
     const res = await fetch(url);
@@ -2569,53 +2649,69 @@ async function fetchTicketmasterEvents(keyword = 'Harry Styles'){
   }
 }
 
-function createLiveSignalFromTicketmaster(tourId, keyword, events){
+function createLiveSignalFromTicketmaster(tourId, keyword, officialEvents, relatedEvents){
   const now = new Date();
   const todayISO = now.toISOString().slice(0,10);
   const checkedAt = now.toLocaleString(undefined, {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+  const homeCity = getHomeCityOnly();
 
-  const normalized = (events || [])
+  const normalizedOfficial = (officialEvents || [])
     .map(normalizeTicketmasterEvent)
     .filter(e => e.date && e.date >= todayISO)
-    .filter(e => isRelevantTicketmasterEvent(e, keyword))
+    .filter(e => isOfficialTicketmasterEvent(e, keyword))
     .sort((a,b) => new Date(a.date) - new Date(b.date));
 
-  const nextEvent = normalized.find(e => e.url) || normalized[0];
+  const localRelated = (relatedEvents || [])
+    .map(normalizeTicketmasterEvent)
+    .filter(e => e.date && e.date >= todayISO)
+    .filter(e => isRelatedTicketmasterEvent(e, keyword))
+    .sort((a,b) => new Date(a.date) - new Date(b.date))
+    .slice(0,3);
+
+  const nextEvent = normalizedOfficial.find(e => e.url) || normalizedOfficial[0];
 
   if(nextEvent){
     const place = [nextEvent.city, nextEvent.state].filter(Boolean).join(', ');
     return {
       headline: `Official Ticketmaster listing detected: ${place}`,
-      confidence: 'Live Ticketmaster check',
+      confidence: 'Live official listing check',
       source: 'Ticketmaster Discovery API',
       updated: checkedAt,
-      fanImpact: `Ticketmaster currently lists ${nextEvent.name} at ${nextEvent.venue} on ${formatSignalDate(nextEvent.date)}. This confirms at least one official access path is visible in live event data; it does not, by itself, prove demand level or sellout probability.`,
+      fanImpact: `Ticketmaster currently lists ${nextEvent.name} at ${nextEvent.venue} on ${formatSignalDate(nextEvent.date)}. onTour is treating this as an official tour opportunity because it passed the artist-match and fan-protection filters.`,
       recommendedAction: nextEvent.url
-        ? `Open the official Ticketmaster listing for ${place} before relying on resale. Compare date, venue, onsale status, and available access paths.`
-        : `Use this as a live availability marker, then compare the official listing against itinerary and access-path information before making a buying decision.`,
+        ? `Open the official listing for ${place}. Confirm date, venue, onsale status, and available access paths before considering resale.`
+        : `Use this as an official availability marker, then compare it against itinerary and access-path information before buying.`,
       url: nextEvent.url || '',
       liveEventId: nextEvent.id || '',
-      liveStatus: nextEvent.status || ''
+      liveStatus: nextEvent.status || '',
+      relatedEvents: localRelated,
+      relatedCity: homeCity
     };
   }
 
   return {
     headline: `No current official Ticketmaster listing detected for ${keyword}`,
-    confidence: 'Live Ticketmaster check',
+    confidence: 'Live official listing check',
     source: 'Ticketmaster Discovery API',
     updated: checkedAt,
-    fanImpact: `onTour checked Ticketmaster's live Discovery API and did not find a future music event listing that clearly matches ${keyword}. That is still useful intelligence: there is no verified official listing to act on from this feed right now.`,
-    recommendedAction: `Do not treat resale pages, rumors, or social posts as confirmed access. Keep this tour tracked; onTour can flag an official listing when it appears in live data.`,
+    fanImpact: `onTour checked Ticketmaster live event data and did not find a future music event that clearly passes the official-artist filter for ${keyword}. Related events may still exist, but they should not be confused with real tour dates.`,
+    recommendedAction: `Do not treat tribute nights, club events, resale rumors, or social posts as confirmed access. Keep this tour tracked; onTour can flag an official listing when it appears in live data.`,
     url: '',
-    liveStatus: 'no_match'
+    liveStatus: 'no_official_match',
+    relatedEvents: localRelated,
+    relatedCity: homeCity
   };
 }
 
 async function hydrateTicketmasterSignals(){
   const entries = Object.entries(TICKETMASTER_TOUR_KEYWORDS);
+  const homeCity = getHomeCityOnly();
   await Promise.all(entries.map(async ([tourId, keyword]) => {
-    const events = await fetchTicketmasterEvents(keyword);
-    TOUR_SIGNAL_DATA[tourId] = createLiveSignalFromTicketmaster(tourId, keyword, events);
+    const [officialEvents, relatedEvents] = await Promise.all([
+      fetchTicketmasterEvents(keyword, {size:40}),
+      homeCity ? fetchTicketmasterEvents(keyword, {city:homeCity, size:20}) : Promise.resolve([])
+    ]);
+    TOUR_SIGNAL_DATA[tourId] = createLiveSignalFromTicketmaster(tourId, keyword, officialEvents, relatedEvents);
   }));
 
   if(curTourId && curTab === 0){
@@ -2665,31 +2761,70 @@ async function loadTourSignals(){
   }
 }
 
+function renderLocalFanEvents(signal, tourId){
+  const city = signal?.relatedCity || getHomeCityOnly();
+  const events = signal?.relatedEvents || [];
+  if(!city){
+    return `
+      <div class="related-local-card" id="localFanEventsCard">
+        <div class="signal-kicker">Local Fan Events</div>
+        <div class="signal-title">Add your home market to see related events near you.</div>
+        <div class="signal-impact">Tribute bands, theme nights, DJ events and other fan-adjacent listings should be local — not mixed into official tour intel.</div>
+        <div style="margin-top:10px"><button class="abt-btn alert-action" onclick="openAlertsModal('${tourId}')">Add location / get alerts</button></div>
+      </div>`;
+  }
+  if(!events.length){
+    return `
+      <div class="related-local-card" id="localFanEventsCard">
+        <div class="signal-kicker">Local Fan Events Near ${escapeHTML(city)}</div>
+        <div class="signal-title">No related fan events detected locally right now.</div>
+        <div class="signal-impact">onTour will keep official tour opportunities global, while keeping tribute/theme-night discovery local to your selected market.</div>
+        <div style="margin-top:10px"><button class="abt-btn" onclick="openAlertsModal('${tourId}')">Change location / alert scope</button></div>
+      </div>`;
+  }
+  return `
+    <div class="related-local-card" id="localFanEventsCard">
+      <div class="signal-kicker">Local Fan Events Near ${escapeHTML(city)}</div>
+      <div class="signal-title">Related events — clearly not official tour dates.</div>
+      <div class="signal-impact">These may interest fans, but they are separated from official tour signals to protect trust.</div>
+      <div class="related-event-list">
+        ${events.map(e => `<div class="related-event-row">
+          <div class="related-event-name">${escapeHTML(e.name)}</div>
+          <div class="related-event-meta">${escapeHTML(formatSignalDate(e.date))} · ${escapeHTML(e.venue)} · ${escapeHTML([e.city,e.state].filter(Boolean).join(', '))}</div>
+          <div class="related-event-note">Not an official ${escapeHTML(TICKETMASTER_TOUR_KEYWORDS[tourId] || 'artist')} tour date.</div>
+          ${e.url ? `<div class="related-event-actions"><a class="abt-btn external-link" href="${e.url}" target="_blank" rel="noopener">View event</a></div>` : ''}
+        </div>`).join('')}
+      </div>
+      <div style="margin-top:10px"><button class="abt-btn" onclick="openAlertsModal('${tourId}')">Change location / alert scope</button></div>
+    </div>`;
+}
+
 function renderTourSignal(tourId){
   const signal = TOUR_SIGNAL_DATA[tourId] || FALLBACK_TOUR_SIGNAL_DATA[tourId];
   if(!signal) return `
     <div class="signal-card" id="tourSignalCard">
-      <div class="signal-kicker">Latest Tour Signal</div>
-      <div class="signal-title">Tour signal monitoring preview</div>
+      <div class="signal-kicker">Latest Official Signal</div>
+      <div class="signal-title">Official signal monitoring preview</div>
       <div class="signal-meta">Preview signal · onTour signal monitoring preview · Updated Prototype build</div>
-      <div class="signal-impact">Live signal data is not connected for this tour yet. This card confirms the signal layer is wired and ready.</div>
+      <div class="signal-impact">Live official signal data is not connected for this tour yet. This card confirms the official signal layer is wired and ready.</div>
       <div class="signal-action"><strong>Recommended:</strong> Use the tour brief, itinerary, and access-path sections until a live signal is available.</div>
     </div>
+    ${renderLocalFanEvents({}, tourId)}
   `;
 
   return `
     <div class="signal-card" id="tourSignalCard">
-      <div class="signal-kicker">Latest Tour Signal</div>
-      <div class="signal-title">${signal.headline}</div>
-      <div class="signal-meta">${signal.confidence} · ${signal.source} · Updated ${signal.updated}</div>
-      <div class="signal-impact">${signal.fanImpact}</div>
-      <div class="signal-action"><strong>Recommended:</strong> ${signal.recommendedAction}</div>
+      <div class="signal-kicker">Latest Official Signal</div>
+      <div class="signal-title">${escapeHTML(signal.headline)}</div>
+      <div class="signal-meta">${escapeHTML(signal.confidence)} · ${escapeHTML(signal.source)} · Updated ${escapeHTML(signal.updated)}</div>
+      <div class="signal-impact">${escapeHTML(signal.fanImpact)}</div>
+      <div class="signal-action"><strong>Recommended:</strong> ${escapeHTML(signal.recommendedAction)}</div>
       ${signal.url ? `<div style="margin-top:10px"><a class="abt-btn primary-action external-link" href="${signal.url}" target="_blank" rel="noopener">Open official listing</a></div>` : ''}
     </div>
+    ${renderLocalFanEvents(signal, tourId)}
   `;
 }
 
-/* ═══════════ INIT ═══════════ */
 let savedMode='industry';try{savedMode=localStorage.getItem('ontourMode') || 'industry';}catch(e){}setMode(savedMode);
 loadTourSignals().then(async()=>{
   await hydrateTicketmasterSignals();
