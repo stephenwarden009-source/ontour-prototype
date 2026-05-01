@@ -1605,10 +1605,16 @@ function openItinerary(id){
 
 function openTourSignal(id){
   openTour(id);
+  curTab=0;
+  const t=TOURS.find(x=>x.id===id);
+  if(t){
+    renderTabs(t);
+    renderTabContent(t,0);
+  }
   setTimeout(()=>{
     const signal=document.getElementById('tourSignalCard');
     if(signal) signal.scrollIntoView({behavior:'smooth',block:'start'});
-  },80);
+  },120);
 }
 
 function renderTabs(t){
@@ -2500,22 +2506,176 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;setTim
 document.getElementById('instBtn').addEventListener('click',async()=>{if(!dp)return;dp.prompt();await dp.userChoice;dp=null;document.getElementById('instBanner').classList.add('hidden')});
 function dismissInst(){document.getElementById('instBanner').classList.add('hidden')}
 
+
+/* ═══════════ TICKETMASTER DISCOVERY API — LIVE SIGNAL PIPELINE ═══════════ */
+const TICKETMASTER_API_KEY = '8JMzyTOgftXrOfZFXzhfguKKfQS1DtHx';
+
+const TICKETMASTER_TOUR_KEYWORDS = {
+  'styles-2026': 'Harry Styles',
+  'rush-2026': 'Rush',
+  'bruno-2026': 'Bruno Mars'
+};
+
+function formatSignalDate(dateStr){
+  if(!dateStr) return 'date TBA';
+  try{
+    return new Date(dateStr + 'T12:00:00').toLocaleDateString(undefined, {
+      month:'short', day:'numeric', year:'numeric'
+    });
+  }catch(e){
+    return dateStr;
+  }
+}
+
+function normalizeTicketmasterEvent(e){
+  const venue = e?._embedded?.venues?.[0] || {};
+  const attractionNames = (e?._embedded?.attractions || []).map(a => a.name || '').filter(Boolean);
+  return {
+    id: e?.id || '',
+    name: e?.name || 'Untitled event',
+    date: e?.dates?.start?.localDate || '',
+    time: e?.dates?.start?.localTime || '',
+    venue: venue.name || 'venue TBA',
+    city: venue.city?.name || 'market TBA',
+    state: venue.state?.stateCode || venue.country?.countryCode || '',
+    status: e?.dates?.status?.code || 'status unknown',
+    url: e?.url || '',
+    attractions: attractionNames
+  };
+}
+
+function isRelevantTicketmasterEvent(event, keyword){
+  const needle = (keyword || '').toLowerCase();
+  if(!needle) return true;
+  const haystack = [event.name, event.venue, event.city, ...(event.attractions || [])]
+    .join(' ')
+    .toLowerCase();
+
+  return needle.split(/\s+/).every(part => haystack.includes(part));
+}
+
+async function fetchTicketmasterEvents(keyword = 'Harry Styles'){
+  const url = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${TICKETMASTER_API_KEY}&keyword=${encodeURIComponent(keyword)}&classificationName=music&sort=date,asc&size=20`;
+
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error(`Ticketmaster request failed: ${res.status}`);
+
+    const data = await res.json();
+    return data?._embedded?.events || [];
+  }catch(err){
+    console.warn('Ticketmaster Discovery API failed:', err);
+    return [];
+  }
+}
+
+function createLiveSignalFromTicketmaster(tourId, keyword, events){
+  const now = new Date();
+  const todayISO = now.toISOString().slice(0,10);
+  const checkedAt = now.toLocaleString(undefined, {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+
+  const normalized = (events || [])
+    .map(normalizeTicketmasterEvent)
+    .filter(e => e.date && e.date >= todayISO)
+    .filter(e => isRelevantTicketmasterEvent(e, keyword))
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
+
+  const nextEvent = normalized.find(e => e.url) || normalized[0];
+
+  if(nextEvent){
+    const place = [nextEvent.city, nextEvent.state].filter(Boolean).join(', ');
+    return {
+      headline: `Official Ticketmaster listing detected: ${place}`,
+      confidence: 'Live Ticketmaster check',
+      source: 'Ticketmaster Discovery API',
+      updated: checkedAt,
+      fanImpact: `Ticketmaster currently lists ${nextEvent.name} at ${nextEvent.venue} on ${formatSignalDate(nextEvent.date)}. This confirms at least one official access path is visible in live event data; it does not, by itself, prove demand level or sellout probability.`,
+      recommendedAction: nextEvent.url
+        ? `Open the official Ticketmaster listing for ${place} before relying on resale. Compare date, venue, onsale status, and available access paths.`
+        : `Use this as a live availability marker, then compare the official listing against itinerary and access-path information before making a buying decision.`,
+      url: nextEvent.url || '',
+      liveEventId: nextEvent.id || '',
+      liveStatus: nextEvent.status || ''
+    };
+  }
+
+  return {
+    headline: `No current official Ticketmaster listing detected for ${keyword}`,
+    confidence: 'Live Ticketmaster check',
+    source: 'Ticketmaster Discovery API',
+    updated: checkedAt,
+    fanImpact: `onTour checked Ticketmaster's live Discovery API and did not find a future music event listing that clearly matches ${keyword}. That is still useful intelligence: there is no verified official listing to act on from this feed right now.`,
+    recommendedAction: `Do not treat resale pages, rumors, or social posts as confirmed access. Keep this tour tracked; onTour can flag an official listing when it appears in live data.`,
+    url: '',
+    liveStatus: 'no_match'
+  };
+}
+
+async function hydrateTicketmasterSignals(){
+  const entries = Object.entries(TICKETMASTER_TOUR_KEYWORDS);
+  await Promise.all(entries.map(async ([tourId, keyword]) => {
+    const events = await fetchTicketmasterEvents(keyword);
+    TOUR_SIGNAL_DATA[tourId] = createLiveSignalFromTicketmaster(tourId, keyword, events);
+  }));
+
+  if(curTourId && curTab === 0){
+    const t = TOURS.find(x => x.id === curTourId);
+    if(t) renderTabContent(t,0);
+  }
+}
+
 /* ═══════════ TOUR SIGNAL ENGINE ═══════════ */
-let TOUR_SIGNAL_DATA = {};
+const FALLBACK_TOUR_SIGNAL_DATA = {
+  'styles-2026': {
+    headline: 'Toronto and European multi-night runs create the clearest watch windows.',
+    confidence: 'Preview signal',
+    source: 'onTour signal monitoring preview',
+    updated: 'Prototype build',
+    fanImpact: 'The strongest fan opportunity is not simply the first listed date. Multi-night stadium clusters and open calendar gaps can point to added-show, returned-ticket, production-hold, or late-release windows.',
+    recommendedAction: 'Compare dates before committing. Track Toronto, Wembley, Paris, Amsterdam, Berlin and other multi-night markets for new access paths.'
+  },
+  'rush-2026': {
+    headline: 'Added dates and legacy-demand pricing make later-run markets worth comparing.',
+    confidence: 'Preview signal',
+    source: 'onTour signal monitoring preview',
+    updated: 'Prototype build',
+    fanImpact: 'The useful read is not just sold-out pressure. Fans should compare primary availability, VIP packaging, resale floors, and added-date markets before paying peak prices.',
+    recommendedAction: 'Check added or later-run cities first, then compare primary, VIP, and secondary options side by side.'
+  },
+  'bruno-2026': {
+    headline: 'High-demand residency-style markets should be tracked for late inventory and returned tickets.',
+    confidence: 'Preview signal',
+    source: 'onTour signal monitoring preview',
+    updated: 'Prototype build',
+    fanImpact: 'Premium demand can make the first visible prices look like the whole market, but late-release and returned-ticket windows may change the picture.',
+    recommendedAction: 'Avoid panic-buying. Track official access paths and compare late inventory before jumping to resale.'
+  }
+};
+
+let TOUR_SIGNAL_DATA = {...FALLBACK_TOUR_SIGNAL_DATA};
 
 async function loadTourSignals(){
   try{
     const res = await fetch('./data/tour-signals.json?v=' + Date.now());
     if(!res.ok) throw new Error('No tour signals file found');
-    TOUR_SIGNAL_DATA = await res.json();
+    const liveSignals = await res.json();
+    TOUR_SIGNAL_DATA = {...FALLBACK_TOUR_SIGNAL_DATA, ...liveSignals};
   }catch(e){
-    TOUR_SIGNAL_DATA = {};
+    TOUR_SIGNAL_DATA = {...FALLBACK_TOUR_SIGNAL_DATA};
   }
 }
 
 function renderTourSignal(tourId){
-  const signal = TOUR_SIGNAL_DATA[tourId];
-  if(!signal) return '';
+  const signal = TOUR_SIGNAL_DATA[tourId] || FALLBACK_TOUR_SIGNAL_DATA[tourId];
+  if(!signal) return `
+    <div class="signal-card" id="tourSignalCard">
+      <div class="signal-kicker">Latest Tour Signal</div>
+      <div class="signal-title">Tour signal monitoring preview</div>
+      <div class="signal-meta">Preview signal · onTour signal monitoring preview · Updated Prototype build</div>
+      <div class="signal-impact">Live signal data is not connected for this tour yet. This card confirms the signal layer is wired and ready.</div>
+      <div class="signal-action"><strong>Recommended:</strong> Use the tour brief, itinerary, and access-path sections until a live signal is available.</div>
+    </div>
+  `;
 
   return `
     <div class="signal-card" id="tourSignalCard">
@@ -2524,13 +2684,15 @@ function renderTourSignal(tourId){
       <div class="signal-meta">${signal.confidence} · ${signal.source} · Updated ${signal.updated}</div>
       <div class="signal-impact">${signal.fanImpact}</div>
       <div class="signal-action"><strong>Recommended:</strong> ${signal.recommendedAction}</div>
+      ${signal.url ? `<div style="margin-top:10px"><a class="abt-btn primary-action external-link" href="${signal.url}" target="_blank" rel="noopener">Open official listing</a></div>` : ''}
     </div>
   `;
 }
 
 /* ═══════════ INIT ═══════════ */
 let savedMode='industry';try{savedMode=localStorage.getItem('ontourMode') || 'industry';}catch(e){}setMode(savedMode);
-loadTourSignals().then(()=>{
+loadTourSignals().then(async()=>{
+  await hydrateTicketmasterSignals();
   renderPillars();
   renderCurrentTourCards();
   renderTourCards();
@@ -2538,6 +2700,7 @@ loadTourSignals().then(()=>{
   updateAlertStatusCard();
   document.getElementById('backBtn').style.display='none';
 });
+
 if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 
 </script>
