@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -856,7 +857,7 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     </button>
     <a class="mode-wordmark" onclick="goHome()"><span class="mode-on">on</span><span class="mode-tour">Tour</span></a>
     <div class="mode-toggle">
-      <button class="mode-btn active" type="button" data-mode-btn="industry" onclick="setMode('industry')">Industry</button>
+      <button class="mode-btn active" type="button" data-mode-btn="industry" onclick="setMode('industry')">Industry Brief</button>
       <button class="mode-btn" type="button" data-mode-btn="fan" onclick="setMode('fan')">Fan App</button>
     </div>
     <button class="mode-about" onclick="openAbout()">About</button>
@@ -875,6 +876,39 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     <div class="pitch-sub"><strong>Superstar tours create more demand than the peak can absorb.</strong><br>Fans enter the same on-sale moments, hometown markets, and limited inventory with almost no practical read on where they actually have a shot.</div>
     <div class="pitch-map">
       <span class="pitch-node">Signal</span><span class="pitch-arrow">→</span><span class="pitch-node">Interpretation</span><span class="pitch-arrow">→</span><span class="pitch-node">Fan action</span><span class="pitch-arrow">→</span><span class="pitch-node">Recovered demand</span>
+    </div>
+  </div>
+
+  <div class="pitch-section" id="industry-orientation">
+    <div class="pitch-card" style="border-color:var(--border2);background:var(--bg2)">
+      <div class="pitch-kicker">Industry brief</div>
+      <div class="pitch-copy" style="margin:0">
+        A high-level view of how <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> improves demand behavior, fan outcomes, and revenue performance across major tours.
+      </div>
+    </div>
+  </div>
+
+  <div class="pitch-section" id="industry-now-line">
+    <div class="pitch-card" style="border-color:var(--greenb);background:linear-gradient(180deg,var(--green2),var(--bg))">
+      <div class="pitch-title" style="margin-bottom:6px">Fans don’t care how the system works.<br>They care whether they can get a ticket.</div>
+      <div class="pitch-subline" style="margin:0"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> gives them visibility, options, and a next move before they enter the on-sale.</div>
+    </div>
+  </div>
+
+  <div class="pitch-section" id="industry-why-now">
+    <div class="pitch-card">
+      <div class="pitch-kicker">Why this matters now</div>
+      <div class="pitch-title">The issue isn’t only market structure. It’s how fans experience the system.</div>
+      <div class="pitch-copy">
+        <p>Fans don’t see contracts, integrations, or operating complexity. They experience one outcome: whether they had a fair, understandable path to a ticket.</p>
+        <p>When they don’t, the system feels opaque, unfair, and impossible to navigate — regardless of how it is actually built.</p>
+        <p>That perception fuels frustration, media cycles, political pressure, and regulatory scrutiny.</p>
+      </div>
+      <div class="pitch-list">
+        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Visibility</div><div class="pitch-point-copy">Fans see real pressure and access paths before the on-sale instead of guessing blind.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Options</div><div class="pitch-point-copy">Markets, dates, travel paths, added shows, returned tickets, and adjacent live opportunities become actionable.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">Better experience</div><div class="pitch-point-copy">The fan journey shifts from blind competition to informed decision-making — without changing ticketing, pricing, or control.</div></div></div>
+      </div>
     </div>
   </div>
 
@@ -906,6 +940,18 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
         <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Shows pressure before the queue</div><div class="pitch-point-copy">Fans see when their home market is brutally oversubscribed instead of learning only after they lose.</div></div></div>
         <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Surfaces actionable options</div><div class="pitch-point-copy">Better dates, backup markets, added-show watches, travel paths, and re-entry windows become visible early.</div></div></div>
         <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">Keeps intent alive</div><div class="pitch-point-copy">A failed fan is still high-intent. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> gives that fan somewhere useful to go next.</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pitch-section" id="industry-not-category">
+    <div class="pitch-card" style="background:var(--bg);border-style:dashed">
+      <div class="pitch-kicker">What this is not</div>
+      <div class="pitch-copy">
+        <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> is not a discovery platform, ticketing app, or resale marketplace.
+      </div>
+      <div class="pitch-copy" style="margin-top:6px">
+        It operates before the on-sale and throughout the tour — helping fans decide <strong>where to compete</strong>, when to act, and what to do next so demand distributes more intelligently across markets, dates, and access paths.
       </div>
     </div>
   </div>
@@ -962,6 +1008,9 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     <div class="pitch-card">
       <div class="pitch-kicker">How it works</div>
       <div class="pitch-title">A simple guidance layer above the live-event system.</div>
+      <div class="pitch-subline">
+        <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> reads observable demand signals — official listings, on-sale timing, inventory movement, access paths, and tour changes — with API partnerships as the long-term integration layer.
+      </div>
       <div class="pitch-list">
         <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Tracks observable demand signals</div><div class="pitch-point-copy">Official listings, on-sale windows, access paths, event status, inventory signals, market patterns, and tour changes.</div></div></div>
         <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Detects what changed</div><div class="pitch-point-copy">Added dates, timing shifts, status changes, inventory movement, cross-market divergence, and related-event activity.</div></div></div>
@@ -1009,6 +1058,10 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 
   <div class="fan-mission-copy">
     <strong><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> shows you where you actually have a shot — before you enter the on-sale.</strong>
+  </div>
+
+  <div class="fan-mission-copy" style="margin-top:10px;font-size:11px;line-height:1.55;color:var(--text3);">
+    Live signals are still being expanded. Early access shows where demand is forming and where options are opening before they become obvious everywhere else.
   </div>
 
   <div class="fan-mission-copy" style="margin-top:10px;">
