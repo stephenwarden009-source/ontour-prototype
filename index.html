@@ -776,6 +776,43 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 .related-event-note{font-size:11px;line-height:1.5;color:var(--text2);margin-top:5px}
 .related-event-actions{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
 
+.signal-memory-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.signal-memory-cell{background:var(--bg);border:.5px solid var(--border2);border-radius:9px;padding:8px}
+.signal-memory-label{font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:2px}
+.signal-memory-value{font-size:12px;font-weight:900;color:var(--text);line-height:1.25}
+.signal-memory-note{font-size:10px;line-height:1.35;color:var(--text3);margin-top:2px}
+.signal-change-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 7px;margin-top:8px;background:var(--blue2);border:.5px solid var(--blueb);color:var(--blue)}
+.signal-change-badge.new{background:var(--green2);border-color:var(--greenb);color:var(--green)}
+.signal-change-badge.none{background:var(--bg);border-color:var(--border2);color:var(--text3)}
+.signal-change-badge.warn{background:var(--amber2);border-color:var(--amberb);color:var(--amber)}
+@media(max-width:360px){.signal-memory-grid{grid-template-columns:1fr}}
+
+/* FAN RECOMMENDATION ENGINE */
+.recommendation-card{
+  background:var(--bg2);
+  border:.5px solid var(--greenb);
+  border-left:3px solid var(--green);
+  border-radius:12px;
+  padding:13px 15px;
+  margin:0 0 10px;
+}
+.rec-kicker{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:5px}
+.rec-priority{display:inline-flex;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 7px;margin-bottom:7px;background:var(--green2);border:.5px solid var(--greenb);color:var(--green)}
+.rec-title{font-family:var(--serif);font-size:17px;line-height:1.2;font-weight:700;color:var(--text);margin-bottom:6px}
+.rec-copy{font-size:12px;line-height:1.55;color:var(--text2)}
+.rec-paths{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.rec-path{background:var(--bg);border:.5px solid var(--border2);border-radius:9px;padding:9px 10px}
+.rec-path-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.rec-path-title{font-size:12px;font-weight:900;color:var(--text);line-height:1.3}
+.rec-path-badge{font-size:9px;font-weight:900;text-transform:uppercase;border-radius:999px;padding:3px 7px;white-space:nowrap;background:var(--blue2);border:.5px solid var(--blueb);color:var(--blue)}
+.rec-path-badge.best{background:var(--green2);border-color:var(--greenb);color:var(--green)}
+.rec-path-badge.watch{background:var(--amber2);border-color:var(--amberb);color:var(--amber)}
+.rec-path-badge.risk{background:var(--red2);border-color:var(--redb);color:var(--red)}
+.rec-path-copy{font-size:11px;line-height:1.5;color:var(--text2);margin-top:4px}
+.rec-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.rec-actions .primary-action{background:var(--ink);border-color:var(--ink);color:#fff}
+@media(max-width:360px){.rec-path-top{flex-direction:column}.rec-path-badge{align-self:flex-start}}
+
 </style>
 </head>
 <body class="mode-industry">
@@ -2587,6 +2624,8 @@ function normalizeTicketmasterEvent(e){
     state: venue.state?.stateCode || venue.country?.countryCode || '',
     status: e?.dates?.status?.code || 'status unknown',
     url: e?.url || '',
+    onsaleStart: e?.sales?.public?.startDateTime || '',
+    onsaleEnd: e?.sales?.public?.endDateTime || '',
     attractions: attractionNames,
     classifications
   };
@@ -2649,9 +2688,314 @@ async function fetchTicketmasterEvents(keyword = 'Harry Styles', opts = {}){
   }
 }
 
+
+function getSignalSnapshotKey(tourId){
+  return 'ontour_signal_snapshot_'+tourId;
+}
+
+function loadSignalSnapshot(tourId){
+  try{
+    const raw = localStorage.getItem(getSignalSnapshotKey(tourId));
+    return raw ? JSON.parse(raw) : null;
+  }catch(e){
+    return null;
+  }
+}
+
+function saveSignalSnapshot(tourId, snapshot){
+  try{
+    localStorage.setItem(getSignalSnapshotKey(tourId), JSON.stringify(snapshot));
+  }catch(e){
+    console.warn('Could not save signal snapshot:', e);
+  }
+}
+
+function makeEventMemoryItem(e){
+  return {
+    id:e.id || [e.name,e.date,e.venue,e.city].join('|'),
+    name:e.name || '',
+    date:e.date || '',
+    venue:e.venue || '',
+    city:e.city || '',
+    state:e.state || '',
+    status:e.status || '',
+    url:e.url || '',
+    onsaleStart:e.onsaleStart || '',
+    onsaleEnd:e.onsaleEnd || ''
+  };
+}
+
+function buildSignalSnapshot(tourId, keyword, checkedAtISO, checkedAtDisplay, officialEvents, relatedEvents, homeCity){
+  return {
+    version:1,
+    tourId,
+    keyword,
+    checkedAtISO,
+    checkedAtDisplay,
+    homeCity:homeCity || '',
+    officialEvents:(officialEvents || []).map(makeEventMemoryItem),
+    relatedEvents:(relatedEvents || []).map(makeEventMemoryItem)
+  };
+}
+
+function compareSignalSnapshots(previous, current){
+  const result = {
+    hasPrevious:!!previous,
+    newOfficial:[],
+    removedOfficial:[],
+    statusChanged:[],
+    onsaleChanged:[],
+    newRelated:[],
+    previousCheckedAt:previous?.checkedAtDisplay || '',
+    previousCheckedAtISO:previous?.checkedAtISO || ''
+  };
+  if(!previous) return result;
+
+  const prevOfficial = new Map((previous.officialEvents || []).map(e => [e.id, e]));
+  const currOfficial = new Map((current.officialEvents || []).map(e => [e.id, e]));
+  const prevRelated = new Map((previous.relatedEvents || []).map(e => [e.id, e]));
+
+  (current.officialEvents || []).forEach(e => {
+    const old = prevOfficial.get(e.id);
+    if(!old) result.newOfficial.push(e);
+    else{
+      if((old.status || '') !== (e.status || '')) result.statusChanged.push({before:old, after:e});
+      if((old.onsaleStart || '') !== (e.onsaleStart || '') || (old.onsaleEnd || '') !== (e.onsaleEnd || '')) result.onsaleChanged.push({before:old, after:e});
+    }
+  });
+  (previous.officialEvents || []).forEach(e => { if(!currOfficial.has(e.id)) result.removedOfficial.push(e); });
+  (current.relatedEvents || []).forEach(e => { if(!prevRelated.has(e.id)) result.newRelated.push(e); });
+  return result;
+}
+
+function formatSignalDateTime(value){
+  if(!value) return '';
+  try{
+    return new Date(value).toLocaleString(undefined, {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+  }catch(e){ return value; }
+}
+
+function buildChangeRead(diff, current){
+  if(!diff.hasPrevious){
+    return {
+      type:'baseline',
+      badgeClass:'warn',
+      label:'Baseline saved',
+      title:'First live snapshot saved for comparison.',
+      detail:'The next check can flag what changed against this baseline.'
+    };
+  }
+  if(diff.newOfficial.length){
+    const e = diff.newOfficial[0];
+    const place = [e.city,e.state].filter(Boolean).join(', ');
+    return {
+      type:'new_official',
+      badgeClass:'new',
+      label:'New official',
+      title:`New official listing detected: ${place || e.name}`,
+      detail:`This event was not in the previous saved snapshot from ${diff.previousCheckedAt}.`
+    };
+  }
+  if(diff.onsaleChanged.length){
+    return {
+      type:'onsale_changed',
+      badgeClass:'new',
+      label:'Onsale changed',
+      title:'Onsale information changed on an official listing.',
+      detail:`onTour detected a change in Ticketmaster sales-window data since ${diff.previousCheckedAt}.`
+    };
+  }
+  if(diff.statusChanged.length){
+    return {
+      type:'status_changed',
+      badgeClass:'new',
+      label:'Status changed',
+      title:'Ticketmaster status changed on an official listing.',
+      detail:`Status movement can indicate onsale, offsale, cancellation, reschedule, or inventory-state changes.`
+    };
+  }
+  if(diff.newRelated.length){
+    return {
+      type:'new_related',
+      badgeClass:'warn',
+      label:'Local related',
+      title:'New local fan-adjacent event detected.',
+      detail:'This is separated from official tour intel because it may be a tribute, theme night, DJ event, or fan gathering.'
+    };
+  }
+  return {
+    type:'no_change',
+    badgeClass:'none',
+    label:'No change',
+    title:'No change since the previous saved check.',
+    detail:`Compared against the snapshot from ${diff.previousCheckedAt}.`
+  };
+}
+
+
+function normalizeMarketName(value){
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+}
+
+function isMajorDemandMarket(event){
+  const city = normalizeMarketName(event.city);
+  const venue = normalizeMarketName(event.venue);
+  const majorCities = ['new york','los angeles','toronto','london','paris','chicago','boston','san francisco','miami','las vegas','dallas','atlanta','seattle','philadelphia','washington','vancouver','montreal'];
+  const majorVenues = ['stadium','arena','centre','center','garden','dome','field','bowl','o2','wembley','rogers','msg','madison square'];
+  return majorCities.some(c => city.includes(c)) || majorVenues.some(v => venue.includes(v));
+}
+
+function marketEventCount(event, officialEvents){
+  const city = normalizeMarketName(event.city);
+  return (officialEvents || []).filter(e => normalizeMarketName(e.city) === city).length;
+}
+
+function scoreMarketOpportunity(event, officialEvents){
+  let score = 55;
+  const count = marketEventCount(event, officialEvents);
+  const status = String(event.status || '').toLowerCase();
+  if(isMajorDemandMarket(event)) score -= 12;
+  if(count > 1) score += 14;
+  if(event.onsaleStart) score += 8;
+  if(status.includes('onsale')) score += 6;
+  if(status.includes('offsale') || status.includes('cancel')) score -= 20;
+  const city = normalizeMarketName(event.city);
+  if(['cleveland','detroit','pittsburgh','buffalo','milwaukee','ottawa','hamilton'].some(c => city.includes(c))) score += 10;
+  return Math.max(0, Math.min(100, score));
+}
+
+function buildMarketPaths(officialEvents){
+  const events = (officialEvents || []).filter(Boolean);
+  if(!events.length) return [];
+  const ranked = events.map(e => ({...e, opportunityScore:scoreMarketOpportunity(e, events)})).sort((a,b) => b.opportunityScore - a.opportunityScore);
+  const best = ranked[0];
+  const riskiest = [...ranked].sort((a,b) => scoreMarketOpportunity(a, events) - scoreMarketOpportunity(b, events))[0];
+  const paths = [];
+  if(best){
+    paths.push({
+      title:`Best shot to compare: ${[best.city,best.state].filter(Boolean).join(', ') || best.name}`,
+      badge:'Best shot',
+      badgeClass:'best',
+      copy:`${best.venue} · ${formatSignalDate(best.date)}. This market scores better in the prototype because it appears less concentrated, has multiple-date potential, or has clearer access timing.`
+    });
+  }
+  if(riskiest && riskiest.id !== best?.id){
+    paths.push({
+      title:`Highest-pressure watch: ${[riskiest.city,riskiest.state].filter(Boolean).join(', ') || riskiest.name}`,
+      badge:'Risk',
+      badgeClass:'risk',
+      copy:`This market may attract heavier queue pressure. Treat it as a backup only if price, access path, and timing still make sense.`
+    });
+  }
+  paths.push({
+    title:'Watch next: added dates, returned tickets, and status changes',
+    badge:'Watch',
+    badgeClass:'watch',
+    copy:'The next useful signal is not just a listing. It is a second night, a posted onsale window, a status change, or a cleaner access path.'
+  });
+  return paths.slice(0,3);
+}
+
+function buildFanRecommendation(tourId, keyword, change, diff, officialEvents, relatedEvents, primaryEvent){
+  const officialCount = (officialEvents || []).length;
+  const relatedCount = (relatedEvents || []).length;
+  const changeType = change?.type || 'unknown';
+  const recommendation = {
+    priority:'What you should do',
+    title:'Best move: keep tracking before you commit.',
+    copy:'Use the official signal first, then compare markets and access paths before making a ticket decision.',
+    paths:[],
+    actions:[{label:'Get alerts', type:'button', onclick:`openAlertsModal('${tourId}')`, primary:true}]
+  };
+
+  if(!officialCount){
+    recommendation.priority = 'Protect yourself';
+    recommendation.title = 'Best move: get alerts before you chase rumors.';
+    recommendation.copy = `No official ${keyword} Ticketmaster listing passed the onTour filter. Do not buy from screenshots, fan posts, suspicious presale links, or tribute/theme-night listings pretending to be tour dates.`;
+    recommendation.paths = [
+      {title:'Do now', badge:'Protect', badgeClass:'best', copy:'Save the tour and your home market so onTour can flag an official listing when it appears.'},
+      {title: relatedCount ? 'Optional local fun' : 'Local related events', badge:'Local', badgeClass:'watch', copy: relatedCount ? 'Theme nights or tribute events may be worth seeing locally, but they are not official tour dates.' : 'No local related events are being surfaced yet. Add/change your city to check your market.'}
+    ];
+    recommendation.actions.push({label:'Local fan events', type:'button', onclick:`openLocalFanEvents('${tourId}')`});
+    return recommendation;
+  }
+
+  if(changeType === 'new_official'){
+    const place = primaryEvent ? [primaryEvent.city,primaryEvent.state].filter(Boolean).join(', ') : '';
+    recommendation.priority = 'New opportunity';
+    recommendation.title = `Best move: verify ${place || 'the new listing'} before the crowd catches up.`;
+    recommendation.copy = 'A new official listing is the moment to confirm venue, date, onsale timing, and backup markets. Do not assume the first visible city is your best shot.';
+    recommendation.paths = buildMarketPaths(officialEvents);
+    if(primaryEvent?.url) recommendation.actions.unshift({label:'Open official listing', type:'link', url:primaryEvent.url, primary:true});
+    recommendation.actions.push({label:'Compare tour brief', type:'button', onclick:`openTour('${tourId}')`});
+    return recommendation;
+  }
+
+  if(changeType === 'onsale_changed'){
+    recommendation.priority = 'Onsale prep';
+    recommendation.title = 'Best move: prepare now, not five minutes before onsale.';
+    recommendation.copy = 'Ticketmaster sales-window data changed. Log in early, save payment details, know your backup markets, and avoid panic-buying the first expensive option you see.';
+    recommendation.paths = buildMarketPaths(officialEvents);
+    if(primaryEvent?.url) recommendation.actions.unshift({label:'Check onsale info', type:'link', url:primaryEvent.url, primary:true});
+    return recommendation;
+  }
+
+  if(changeType === 'status_changed'){
+    recommendation.priority = 'Status watch';
+    recommendation.title = 'Best move: check the official listing before reacting.';
+    recommendation.copy = 'A status change can mean onsale movement, offsale status, rescheduling, cancellation, or inventory-state changes. Verify the official page before making a buy/no-buy decision.';
+    recommendation.paths = buildMarketPaths(officialEvents);
+    if(primaryEvent?.url) recommendation.actions.unshift({label:'Verify official status', type:'link', url:primaryEvent.url, primary:true});
+    return recommendation;
+  }
+
+  if(officialCount > 1){
+    recommendation.priority = 'Compare markets';
+    recommendation.title = 'Best move: do not chase the obvious city first.';
+    recommendation.copy = 'Multiple official listings are visible. Compare markets, nights, and access paths before joining the highest-pressure queue.';
+    recommendation.paths = buildMarketPaths(officialEvents);
+    if(primaryEvent?.url) recommendation.actions.unshift({label:'Open next official listing', type:'link', url:primaryEvent.url, primary:true});
+    recommendation.actions.push({label:'Compare tour brief', type:'button', onclick:`openTour('${tourId}')`});
+    return recommendation;
+  }
+
+  recommendation.priority = 'Single listing watch';
+  recommendation.title = 'Best move: verify the official path and keep a backup.';
+  recommendation.copy = 'Only one clean official listing is currently visible in this check. Confirm details, watch for added dates, and keep alerts on for better access windows.';
+  recommendation.paths = buildMarketPaths(officialEvents);
+  if(primaryEvent?.url) recommendation.actions.unshift({label:'Open official listing', type:'link', url:primaryEvent.url, primary:true});
+  return recommendation;
+}
+
+function renderRecommendationCard(signal, tourId){
+  const rec = signal?.recommendation;
+  if(!rec) return '';
+  const paths = (rec.paths || []).map(p => `
+    <div class="rec-path">
+      <div class="rec-path-top"><div class="rec-path-title">${escapeHTML(p.title)}</div><div class="rec-path-badge ${escapeHTML(p.badgeClass || '')}">${escapeHTML(p.badge || 'Move')}</div></div>
+      <div class="rec-path-copy">${escapeHTML(p.copy)}</div>
+    </div>`).join('');
+  const actions = (rec.actions || []).map(a => {
+    const cls = `abt-btn ${a.primary ? 'primary-action' : ''}`;
+    if(a.type === 'link' && a.url) return `<a class="${cls} external-link" href="${a.url}" target="_blank" rel="noopener">${escapeHTML(a.label)}</a>`;
+    if(a.onclick) return `<button class="${cls}" onclick="${a.onclick}">${escapeHTML(a.label)}</button>`;
+    return '';
+  }).join('');
+  return `
+    <div class="recommendation-card" id="fanRecommendationCard">
+      <div class="rec-kicker">What you should do</div>
+      <div class="rec-priority">${escapeHTML(rec.priority || 'Recommended move')}</div>
+      <div class="rec-title">${escapeHTML(rec.title || '')}</div>
+      <div class="rec-copy">${escapeHTML(rec.copy || '')}</div>
+      ${paths ? `<div class="rec-paths">${paths}</div>` : ''}
+      ${actions ? `<div class="rec-actions">${actions}</div>` : ''}
+    </div>`;
+}
+
 function createLiveSignalFromTicketmaster(tourId, keyword, officialEvents, relatedEvents){
   const now = new Date();
   const todayISO = now.toISOString().slice(0,10);
+  const checkedAtISO = now.toISOString();
   const checkedAt = now.toLocaleString(undefined, {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
   const homeCity = getHomeCityOnly();
 
@@ -2666,40 +3010,96 @@ function createLiveSignalFromTicketmaster(tourId, keyword, officialEvents, relat
     .filter(e => e.date && e.date >= todayISO)
     .filter(e => isRelatedTicketmasterEvent(e, keyword))
     .sort((a,b) => new Date(a.date) - new Date(b.date))
-    .slice(0,3);
+    .slice(0,6);
+
+  const snapshot = buildSignalSnapshot(tourId, keyword, checkedAtISO, checkedAt, normalizedOfficial, localRelated, homeCity);
+  const previous = loadSignalSnapshot(tourId);
+  const diff = compareSignalSnapshots(previous, snapshot);
+  const change = buildChangeRead(diff, snapshot);
+  saveSignalSnapshot(tourId, snapshot);
 
   const nextEvent = normalizedOfficial.find(e => e.url) || normalizedOfficial[0];
+  const relatedForDisplay = localRelated.slice(0,3);
+  const memory = {
+    checkedAt,
+    previousCheckedAt: diff.previousCheckedAt || '',
+    officialCount: normalizedOfficial.length,
+    relatedCount: localRelated.length,
+    newOfficialCount: diff.newOfficial.length,
+    newRelatedCount: diff.newRelated.length,
+    statusChangedCount: diff.statusChanged.length,
+    onsaleChangedCount: diff.onsaleChanged.length,
+    changeType: change.type,
+    changeLabel: change.label,
+    changeTitle: change.title,
+    changeDetail: change.detail,
+    changeBadgeClass: change.badgeClass
+  };
+
+  const buildRecommendationFor = (event) => buildFanRecommendation(tourId, keyword, change, diff, normalizedOfficial, localRelated, event || nextEvent);
+
+  if(change.type === 'new_official'){
+    const e = diff.newOfficial[0];
+    const place = [e.city, e.state].filter(Boolean).join(', ');
+    return {
+      headline: change.title,
+      confidence: 'Change detected from saved snapshot',
+      source: 'Ticketmaster Discovery API + onTour comparison engine',
+      updated: checkedAt,
+      fanImpact: `${e.name} at ${e.venue} on ${formatSignalDate(e.date)} was not present in the previous saved Ticketmaster snapshot. onTour is treating this as a new official ticket opportunity because it passed the artist-match and fan-protection filters.`,
+      recommendedAction: e.url
+        ? `Open the official listing for ${place || e.name}. Confirm date, venue, onsale status, and access path before considering resale.`
+        : `Treat this as a new official availability marker, then verify itinerary and access details before buying.`,
+      url: e.url || '',
+      liveEventId: e.id || '',
+      liveStatus: e.status || '',
+      officialEvents: normalizedOfficial.slice(0,6),
+      relatedEvents: relatedForDisplay,
+      relatedCity: homeCity,
+      memory,
+      recommendation: buildRecommendationFor(e)
+    };
+  }
 
   if(nextEvent){
     const place = [nextEvent.city, nextEvent.state].filter(Boolean).join(', ');
+    const unchangedLead = change.type === 'no_change' ? 'No new official change since your last saved check. ' : '';
     return {
-      headline: `Official Ticketmaster listing detected: ${place}`,
-      confidence: 'Live official listing check',
-      source: 'Ticketmaster Discovery API',
+      headline: change.type === 'no_change' ? `Official listing still detected: ${place}` : change.title,
+      confidence: change.type === 'no_change' ? 'Live official listing check + snapshot comparison' : 'Change detected from saved snapshot',
+      source: 'Ticketmaster Discovery API + onTour comparison engine',
       updated: checkedAt,
-      fanImpact: `Ticketmaster currently lists ${nextEvent.name} at ${nextEvent.venue} on ${formatSignalDate(nextEvent.date)}. onTour is treating this as an official tour opportunity because it passed the artist-match and fan-protection filters.`,
+      fanImpact: `${unchangedLead}Ticketmaster currently lists ${nextEvent.name} at ${nextEvent.venue} on ${formatSignalDate(nextEvent.date)}. onTour is treating this as an official tour opportunity because it passed the artist-match and fan-protection filters.`,
       recommendedAction: nextEvent.url
         ? `Open the official listing for ${place}. Confirm date, venue, onsale status, and available access paths before considering resale.`
         : `Use this as an official availability marker, then compare it against itinerary and access-path information before buying.`,
       url: nextEvent.url || '',
       liveEventId: nextEvent.id || '',
       liveStatus: nextEvent.status || '',
-      relatedEvents: localRelated,
-      relatedCity: homeCity
+      officialEvents: normalizedOfficial.slice(0,6),
+      relatedEvents: relatedForDisplay,
+      relatedCity: homeCity,
+      memory,
+      recommendation: buildRecommendationFor(nextEvent)
     };
   }
 
   return {
-    headline: `No current official Ticketmaster listing detected for ${keyword}`,
-    confidence: 'Live official listing check',
-    source: 'Ticketmaster Discovery API',
+    headline: change.type === 'no_change'
+      ? `No current official Ticketmaster listing detected for ${keyword}`
+      : change.title,
+    confidence: diff.hasPrevious ? 'Live official listing check + snapshot comparison' : 'Live official listing check + baseline snapshot',
+    source: 'Ticketmaster Discovery API + onTour comparison engine',
     updated: checkedAt,
-    fanImpact: `onTour checked Ticketmaster live event data and did not find a future music event that clearly passes the official-artist filter for ${keyword}. Related events may still exist, but they should not be confused with real tour dates.`,
+    fanImpact: `onTour checked Ticketmaster live event data and did not find a future music event that clearly passes the official-artist filter for ${keyword}. Related events may still exist, but they should not be confused with real tour dates. ${diff.hasPrevious ? change.detail : 'A baseline has now been saved so the next check can detect changes.'}`,
     recommendedAction: `Do not treat tribute nights, club events, resale rumors, or social posts as confirmed access. Keep this tour tracked; onTour can flag an official listing when it appears in live data.`,
     url: '',
     liveStatus: 'no_official_match',
-    relatedEvents: localRelated,
-    relatedCity: homeCity
+    officialEvents: normalizedOfficial.slice(0,6),
+    relatedEvents: relatedForDisplay,
+    relatedCity: homeCity,
+    memory,
+    recommendation: buildRecommendationFor(null)
   };
 }
 
@@ -2817,10 +3217,18 @@ function renderTourSignal(tourId){
       <div class="signal-kicker">Latest Official Signal</div>
       <div class="signal-title">${escapeHTML(signal.headline)}</div>
       <div class="signal-meta">${escapeHTML(signal.confidence)} · ${escapeHTML(signal.source)} · Updated ${escapeHTML(signal.updated)}</div>
+      ${signal.memory ? `<div class="signal-change-badge ${escapeHTML(signal.memory.changeBadgeClass || '')}">${escapeHTML(signal.memory.changeLabel || 'Signal check')}</div>` : ''}
       <div class="signal-impact">${escapeHTML(signal.fanImpact)}</div>
+      ${signal.memory ? `<div class="signal-memory-grid">
+        <div class="signal-memory-cell"><div class="signal-memory-label">Official dates</div><div class="signal-memory-value">${Number(signal.memory.officialCount || 0)}</div><div class="signal-memory-note">Passed official filter</div></div>
+        <div class="signal-memory-cell"><div class="signal-memory-label">Local related</div><div class="signal-memory-value">${Number(signal.memory.relatedCount || 0)}</div><div class="signal-memory-note">Separated from official intel</div></div>
+        <div class="signal-memory-cell"><div class="signal-memory-label">Change read</div><div class="signal-memory-value">${escapeHTML(signal.memory.changeTitle || 'Signal checked')}</div><div class="signal-memory-note">${escapeHTML(signal.memory.changeDetail || '')}</div></div>
+        <div class="signal-memory-cell"><div class="signal-memory-label">Previous check</div><div class="signal-memory-value">${escapeHTML(signal.memory.previousCheckedAt || 'First check')}</div><div class="signal-memory-note">Stored on this device</div></div>
+      </div>` : ''}
       <div class="signal-action"><strong>Recommended:</strong> ${escapeHTML(signal.recommendedAction)}</div>
       ${signal.url ? `<div style="margin-top:10px"><a class="abt-btn primary-action external-link" href="${signal.url}" target="_blank" rel="noopener">Open official listing</a></div>` : ''}
     </div>
+    ${renderRecommendationCard(signal, tourId)}
     ${renderLocalFanEvents(signal, tourId)}
   `;
 }
