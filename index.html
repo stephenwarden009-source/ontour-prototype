@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -656,6 +657,21 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 }
 
 
+
+
+/* TOUR LIFECYCLE — INDUSTRY MODE */
+.lifecycle-card{border-color:var(--blueb);background:linear-gradient(180deg,var(--bg2),var(--bg))}
+.lifecycle-flow{display:flex;flex-direction:column;gap:8px;margin:12px 0 10px}
+.lifecycle-step{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--bg);border:.5px solid var(--border2);border-radius:11px;padding:10px 11px}
+.lifecycle-num{width:28px;height:28px;border-radius:50%;background:var(--blue2);border:.5px solid var(--blueb);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}
+.lifecycle-title{font-size:12px;font-weight:900;line-height:1.3;color:var(--text);margin-bottom:2px}
+.lifecycle-copy{font-size:11px;line-height:1.5;color:var(--text2)}
+.lifecycle-copy strong{color:var(--text);font-weight:900}
+.lifecycle-rail{margin-top:10px;background:var(--green2);border:.5px solid var(--greenb);border-radius:11px;padding:11px 12px}
+.lifecycle-rail-title{font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:4px}
+.lifecycle-rail-copy{font-size:12px;line-height:1.55;color:var(--text2)}
+.lifecycle-rail-copy strong{color:var(--text);font-weight:900}
+
 /* TOUR BEHAVIOR MODULE */
 .tour-behavior-card{background:var(--bg2);border:.5px solid var(--greenb);border-radius:12px;padding:13px 15px;margin-bottom:10px}
 .tour-behavior-card .tb-kicker{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green);margin-bottom:5px}
@@ -854,79 +870,90 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
   <div class="pitch-hero">
     <div class="pitch-brandmark"><span class="wm-on">on</span><span class="wm-tour">Tour</span></div>
     <div class="pitch-cat">Tour Ticket Intelligence™</div>
-    <div class="pitch-sub"><strong>A fan transparency layer for high-demand live events.</strong><br>Independent, real-time insight that helps fans understand their true odds — and helps the live industry regain trust, stability, and demand flow.</div>
+    <div class="pitch-sub"><strong>A fan guidance layer that sits beside ticketing.</strong><br><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> helps fans decide what to do before they enter the queue, while they are trying for tickets, and as a long tour keeps changing.</div>
     <div class="pitch-map">
-      <span class="pitch-node">Demand chaos</span><span class="pitch-arrow">→</span><span class="pitch-node">Fan confusion</span><span class="pitch-arrow">→</span><span class="pitch-node">Backlash</span><span class="pitch-arrow">→</span><span class="pitch-node"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span></span><span class="pitch-arrow">→</span><span class="pitch-node">Clarity + distribution</span>
+      <span class="pitch-node">Tour announced</span><span class="pitch-arrow">→</span><span class="pitch-node">Signal + best move</span><span class="pitch-arrow">→</span><span class="pitch-node">Smarter fan choice</span><span class="pitch-arrow">→</span><span class="pitch-node">Cleaner demand flow</span>
     </div>
     <div class="pitch-nav">
       <button class="pitch-chip" type="button" onclick="setMode('fan')">View fan app demo</button>
       <a class="pitch-chip" href="#industry-value">Industry value</a>
-      <a class="pitch-chip" href="#music-tourism">Music tourism</a>
+      <a class="pitch-chip" href="#music-tourism">Tour ecosystem</a>
     </div>
   </div>
 
   <div class="pitch-section">
     <div class="pitch-card">
-      <div class="pitch-kicker">Industry context</div>
-      <div class="pitch-title">Superstar Concerts Akin to Super Bowl, F1, NBA Courtside</div>
+      <div class="pitch-kicker">What the app does for fans</div>
+      <div class="pitch-title">It turns a blind onsale into a decision path</div>
       <div class="pitch-copy">
-        <p>Superstar on-sales trigger impossible-to-satisfy demand, creating the same premium-access dynamics and challenges as big time sports. The difference is many music fans expect every show to be accessible and within their budget. Unfortunately, math often has other ideas.</p>
-        <p>Managing that reality has become a headache, a black eye and even an existential threat for the biggest promoters in the business.</p>
-        <p><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> was created to help fans understand and navigate the process, while offering the industry a new pressure release valve — and a new way to put smaller shows by support acts and connected artists in front of engaged fans.</p>
+        <p>Fans are not given more tickets. They are given better context: official signals, clearer odds, alternate dates, travel-worthy markets, and alerts when the tour changes.</p>
       </div>
-      <div class="reality-label">Reality</div>
       <div class="pitch-list">
-        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Demand compresses instantly</div><div class="pitch-point-copy">Fans pile into the most obvious markets, creating spikes that feel chaotic and unfair.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Fans blame the system</div><div class="pitch-point-copy">Promoters and ticketing platforms absorb the reputational, media, and regulatory fallout.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> reframes the moment</div><div class="pitch-point-copy">Before fans enter the queue, they see odds, access paths, market gaps, related artists, and alerts.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Before the queue</div><div class="pitch-point-copy">Fans see the latest official signal, the cleanest access path, and whether another date, market, or alert is the smarter move.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">During a major onsale</div><div class="pitch-point-copy">The app keeps the fan focused on what to do next: stay with the chosen date, pivot to a better shot, or watch for added inventory.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">Across the life of the tour</div><div class="pitch-point-copy">When new shows, onsales, returned-ticket windows, support-act tours, or connected local events appear, fans get a reasoned option instead of another random listing.</div></div></div>
       </div>
     </div>
   </div>
+
+
+  <div class="pitch-section" id="tour-lifecycle">
+    <div class="pitch-card lifecycle-card">
+      <div class="pitch-kicker">Tour lifecycle fan behavior</div>
+      <div class="pitch-title">Major tours are not one onsale. They are a rolling engagement cycle.</div>
+      <div class="pitch-copy">
+        <p>The first queue is only the first spike. Fans who miss, wait, travel, watch for new dates, follow opening acts, and look for local fan events can stay in the purchase journey for months.</p>
+      </div>
+      <div class="lifecycle-flow" aria-label="How onTour engages fans across the tour lifecycle">
+        <div class="lifecycle-step"><div class="lifecycle-num">1</div><div><div class="lifecycle-title">Announcement + first onsale</div><div class="lifecycle-copy">Fans get signal, odds, and a recommended move before they choose a queue.</div></div></div>
+        <div class="lifecycle-step"><div class="lifecycle-num">2</div><div><div class="lifecycle-title">Missed tickets do not mean lost demand</div><div class="lifecycle-copy">A failed fan is still high-intent. <strong>onTour</strong> redirects them to added dates, better markets, alerts, or later inventory windows.</div></div></div>
+        <div class="lifecycle-step"><div class="lifecycle-num">3</div><div><div class="lifecycle-title">Tour expansion + music tourism</div><div class="lifecycle-copy">When new cities, second nights, festival dates, or travel-worthy markets appear, fans get options instead of rumors.</div></div></div>
+        <div class="lifecycle-step"><div class="lifecycle-num">4</div><div><div class="lifecycle-title">Headliner ecosystem</div><div class="lifecycle-copy">Opening acts, connected artists, tribute shows, and theme nights can reach fans when interest is already active — especially in local markets.</div></div></div>
+        <div class="lifecycle-step"><div class="lifecycle-num">5</div><div><div class="lifecycle-title">Long tail + late inventory</div><div class="lifecycle-copy">As the tour moves, fans can be brought back for returned tickets, softer resale moments, local events, and adjacent shows.</div></div></div>
+      </div>
+      <div class="lifecycle-rail">
+        <div class="lifecycle-rail-title">Industry value</div>
+        <div class="lifecycle-rail-copy"><strong>onTour keeps demand alive after the initial spike.</strong> It gives promoters another surface to engage fans, reduce frustration, and surface inventory across the broader tour ecosystem.</div>
+      </div>
+    </div>
+  </div>
+
   <div class="pitch-section">
-    <div class="mode-hint">What actually changes when fans understand the system</div>
-
     <div class="pitch-card demand-pattern-card">
-      <div class="pitch-kicker">Demand behavior</div>
-      <div class="pitch-title">Same Demand. Different Entry Pattern.</div>
-      <div class="demand-simulation-note">Simulation based on real tour patterns</div>
+      <div class="pitch-kicker">Why industry should care</div>
+      <div class="pitch-title">Same Demand. De-pressurized.</div>
+      <div class="pitch-copy">
+        <p>In a moment of fan anger, regulatory scrutiny, and reputational pressure, <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> offers a visible fan-assist layer without changing pricing, allocation, or the ticketing stack.</p>
+      </div>
 
-      <div class="demand-compare">
+      <div class="demand-compare" aria-label="Demand behavior comparison">
         <div class="demand-side">
-          <div class="demand-label neutral">Typical onsale pattern</div>
+          <span class="demand-label bad">Without context</span>
           <h4>Demand enters blind</h4>
-
-          <div class="demand-market-bar"><span>NYC</span><i style="width:100%"></i></div>
-          <div class="demand-market-bar"><span>LA</span><i style="width:96%"></i></div>
-          <div class="demand-market-bar"><span>Toronto</span><i style="width:92%"></i></div>
-          <div class="demand-market-bar soft"><span>Dallas</span><i style="width:28%"></i></div>
-          <div class="demand-market-bar soft"><span>Denver</span><i style="width:18%"></i></div>
-
-          <p>Fans concentrate in the most obvious markets. Failed attempts spike. The system absorbs the backlash.</p>
+          <div class="demand-market-bar"><span>Night 1</span><i style="width:94%"></i></div>
+          <div class="demand-market-bar"><span>Weekend</span><i style="width:88%"></i></div>
+          <div class="demand-market-bar soft"><span>Night 2</span><i style="width:46%"></i></div>
+          <div class="demand-market-bar soft"><span>Nearby</span><i style="width:34%"></i></div>
+          <p>Fans chase the obvious date, wait too long in the wrong queue, then blame the system when better paths existed elsewhere.</p>
         </div>
-
         <div class="demand-arrow">↓</div>
-
         <div class="demand-side">
-          <div class="demand-label neutral">Informed entry pattern</div>
+          <span class="demand-label good">With onTour</span>
           <h4>Demand enters with context</h4>
-
-          <div class="demand-market-bar balanced"><span>NYC</span><i style="width:88%"></i></div>
-          <div class="demand-market-bar balanced"><span>LA</span><i style="width:84%"></i></div>
-          <div class="demand-market-bar balanced"><span>Toronto</span><i style="width:80%"></i></div>
-          <div class="demand-market-bar balanced"><span>Dallas</span><i style="width:40%"></i></div>
-          <div class="demand-market-bar balanced"><span>Denver</span><i style="width:32%"></i></div>
-
-          <p>Fans still target top markets — but more discover viable alternatives before entering the queue.</p>
+          <div class="demand-market-bar balanced"><span>Night 1</span><i style="width:70%"></i></div>
+          <div class="demand-market-bar balanced"><span>Weekend</span><i style="width:64%"></i></div>
+          <div class="demand-market-bar balanced"><span>Night 2</span><i style="width:58%"></i></div>
+          <div class="demand-market-bar balanced"><span>Nearby</span><i style="width:52%"></i></div>
+          <p>Fans see the signal, understand the tradeoffs, and move toward better dates, added shows, travel markets, or connected events.</p>
         </div>
       </div>
 
-      <div class="demand-bottom">
-        onTour doesn’t balance demand. It reduces extreme concentration before it hits the system.
+      <div class="pitch-panels">
+        <div class="pitch-panel"><div class="pitch-panel-title">Less blind frustration</div><div class="pitch-panel-copy">Fans understand scarcity and options before every failed queue attempt becomes a complaint.</div></div>
+        <div class="pitch-panel"><div class="pitch-panel-title">Better demand flow</div><div class="pitch-panel-copy">Fans discover additional nights, nearby markets, and music-tourism paths before abandoning the purchase journey.</div></div>
+        <div class="pitch-panel"><div class="pitch-panel-title">More ecosystem sales</div><div class="pitch-panel-copy">Support acts, connected artists, and local fan events can reach high-intent fans when interest is peaking.</div></div>
       </div>
-
-      <div class="demand-footnote">
-        Most redistribution occurs across multi-night runs, added shows, and nearby secondary markets — not core destination cities.
-      </div>
+      <div class="demand-bottom"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> does not change ticketing. It changes the experience around ticketing.</div>
     </div>
   </div>
 
@@ -1020,28 +1047,27 @@ Intelligence.<br>
     <div style="font-family:'Montserrat','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:400;color:rgba(255,255,255,0.92);line-height:1.7;">&ldquo;We need to bring down service fees, become much more transparent and regain trust from consumers.&rdquo;</div>
     <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:10px;font-weight:700;letter-spacing:.06em;">&mdash; Michael Rapino, CEO, Live Nation</div>
   </div>
+  <div class="pitch-quote-line"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> is a practical transparency layer: fans see what is happening, what it means, and what to do next.</div>
+</div>
 
-  <div class="pitch-quote-line"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> brings transparency to the fan experience — with real-time tour intelligence.</div>
-  </div>
-
-  <div data-mode-section="industry">
+<div data-mode-section="industry">
   <div class="pitch-section" id="industry-value">
     <div class="pitch-card">
       <div class="pitch-kicker">Industry value</div>
-      <div class="pitch-title"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> Strengthens Live Music Ecosystem</div>
+      <div class="pitch-title">A fan assist layer that also lifts the broader live ecosystem</div>
       <div class="pitch-list">
-        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Reduces chaos & negative sentiment</div><div class="pitch-point-copy">Fans understand scarcity, demand spikes, official access paths, and odds before queueing.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Redistributes demand</div><div class="pitch-point-copy">Fans are guided toward alternative dates, stronger supply, request windows, and travel-worthy markets.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">Lifts the long tail</div><div class="pitch-point-copy">Connected artists, support acts, adjacent shows, and smaller shows with unsold inventory are surfaced with clear reasons — not random recommendations.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Fan clarity at the pressure point</div><div class="pitch-point-copy">Before and during onsale, fans see official signals, best-shot guidance, and practical alternatives instead of entering blind.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Demand is guided, not forced</div><div class="pitch-point-copy">Fans are shown adjacent dates, added shows, nearby markets, and travel-worthy options when those paths make sense.</div></div></div>
+        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">The tour becomes an ecosystem</div><div class="pitch-point-copy">Opening acts, collaborators, connected artists, tribute nights, and theme events can be surfaced with context — especially for shows that need more demand.</div></div></div>
       </div>
       <div class="pitch-map">
-        <span class="pitch-node">Headliner</span><span class="pitch-arrow">→</span><span class="pitch-node">Support act</span><span class="pitch-arrow">→</span><span class="pitch-node">Connected artist</span><span class="pitch-arrow">→</span><span class="pitch-node">Available shows</span>
+        <span class="pitch-node">Headliner</span><span class="pitch-arrow">→</span><span class="pitch-node">Added dates</span><span class="pitch-arrow">→</span><span class="pitch-node">Support acts</span><span class="pitch-arrow">→</span><span class="pitch-node">Connected artists</span><span class="pitch-arrow">→</span><span class="pitch-node">Local fan events</span>
       </div>
     </div>
   </div>
-  </div>
+</div>
 
-  <div data-mode-section="fan">
+<div data-mode-section="fan">
   <div id="myToursFeed" class="card" style="margin:10px 18px 18px;display:none;">
     <div class="ct">My Tours</div>
     <div class="tl">
@@ -1107,109 +1133,31 @@ Intelligence.<br>
   <div data-mode-section="industry">
   <div class="pitch-section" id="music-tourism">
     <div class="pitch-card">
-      <div class="pitch-kicker">Music Tourism</div>
-      <div class="pitch-title">When the local show is impossible, the world opens up</div>
-      <div class="pitch-copy">When local demand is insane, global access paths become a real part of the fan decision.</div>
+      <div class="pitch-kicker">Tour ecosystem</div>
+      <div class="pitch-title">The opportunity does not end when one queue fails</div>
+      <div class="pitch-copy">A major tour creates a wave of intent. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> keeps that intent useful by showing fans official tour paths first, then related options that fit their location and taste.</div>
       <div class="pitch-panels">
-        <div class="pitch-panel"><div class="pitch-panel-title">Local market</div><div class="pitch-panel-copy">Low odds · highest demand · fastest sellout pressure</div></div>
-        <div class="pitch-panel"><div class="pitch-panel-title">Nearby market</div><div class="pitch-panel-copy">Moderate demand · better supply · realistic alternative</div></div>
-        <div class="pitch-panel"><div class="pitch-panel-title">International market</div><div class="pitch-panel-copy">Higher supply · sometimes lower resale pressure · travel-worthy path</div></div>
+        <div class="pitch-panel"><div class="pitch-panel-title">Official tour options</div><div class="pitch-panel-copy">Added shows, new onsales, returned-ticket windows, and better dates or markets.</div></div>
+        <div class="pitch-panel"><div class="pitch-panel-title">Music tourism</div><div class="pitch-panel-copy">Nearby and international markets become visible when the local show is a long shot.</div></div>
+        <div class="pitch-panel"><div class="pitch-panel-title">Connected events</div><div class="pitch-panel-copy">Opening acts, related artists, tribute shows, and theme nights — clearly labeled, never confused with official tour dates.</div></div>
       </div>
     </div>
-  </div>
 
-  <div class="pitch-section">
     <div class="pitch-card">
-      <div class="pitch-kicker">Neutrality</div>
-      <div class="pitch-title">Independent, but connected</div>
-      <div class="pitch-copy"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> is not ticketing, resale, or social media. It is an independent fan intelligence layer with strategic partnerships with promoters and ticketing platforms where appropriate.</div>
-    </div>
-    <div class="pitch-card">
-      <div class="pitch-kicker">Final vision</div>
-      <div class="pitch-title">A new default for the live experience</div>
-      <div class="pitch-copy">Fans check <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> when tours are announced, during on-sales, when new shows drop, when support acts tour, when secondary markets shift, and when connected artists emerge.</div>
-      <div class="pitch-copy" style="margin-top:8px;font-weight:800;color:var(--text);">Transparency for fans. Stability for the industry.</div>
-    </div>
-  </div>
-
-  <div style="height:14px"></div>
-  <div class="divider"></div>
-  <div class="sec-hdr"><span class="sec-lbl">The industry in numbers</span></div>
-  <div class="ctx-box">
-    <div class="ctx-title">Global Live Music</div>
-    <div class="ctx-grid">
-      <div class="ctx-cell"><div class="ctx-v">$9B+</div><div class="ctx-l">2023 global concert gross · Pollstar</div></div>
-      <div class="ctx-cell"><div class="ctx-v">$25B</div><div class="ctx-l">Live Nation 2025 revenue</div></div>
-      <div class="ctx-cell"><div class="ctx-v">$52B+</div><div class="ctx-l">2030 global concert revenues (per Goldman Sachs)</div></div>
-    </div>
-  </div>
-
-  <div style="height:14px"></div>
-  <div class="divider"></div>
-  <div class="sec-hdr"><span class="sec-lbl">Top-grossing tours · all-time</span></div>
-  <div class="rank-box">
-    <div class="rank-head">
-      <div class="rank-kicker">Infographic</div>
-      <div class="rank-title">Top 5 Highest-Grossing Concert Tours of All Time</div>
-      <div class="rank-sub">Artist, gross revenue and lead promoter(s).</div>
-    </div>
-    <div class="rank-list">
-      <div class="rank-row">
-        <div class="rank-num">1</div>
-        <div>
-          <div class="rank-artist">Taylor Swift</div>
-          <div class="rank-tour">The Eras Tour · 2023–2024</div>
-        </div>
-        <div class="rank-gross">$2.07B<span>Approx. gross revenue</span></div>
-        <div class="rank-promoter"><strong>Louis Messina / Messina Touring Group</strong>, with <strong>AEG Presents</strong></div>
-      </div>
-      <div class="rank-row">
-        <div class="rank-num">2</div>
-        <div>
-          <div class="rank-artist">Coldplay</div>
-          <div class="rank-tour">Music of the Spheres World Tour · 2022–2025</div>
-        </div>
-        <div class="rank-gross">$1.15–1.52B<span>Completed run · verify data-as-of before live pitch</span></div>
-        <div class="rank-promoter"><strong>Live Nation</strong> globally, with regional support including <strong>SJM Concerts</strong> in the UK</div>
-      </div>
-      <div class="rank-row">
-        <div class="rank-num">3</div>
-        <div>
-          <div class="rank-artist">Elton John</div>
-          <div class="rank-tour">Farewell Yellow Brick Road Tour · 2018–2023</div>
-        </div>
-        <div class="rank-gross">$939M<span>Approx. gross revenue</span></div>
-        <div class="rank-promoter"><strong>AEG Presents</strong>, with <strong>Chugg Entertainment</strong> for Australia / New Zealand dates</div>
-      </div>
-      <div class="rank-row">
-        <div class="rank-num">4</div>
-        <div>
-          <div class="rank-artist">Ed Sheeran</div>
-          <div class="rank-tour">÷ (Divide) Tour · 2017–2019</div>
-        </div>
-        <div class="rank-gross">$776M<span>Approx. gross revenue</span></div>
-        <div class="rank-promoter"><strong>Independent promoter network</strong> coordinated by Stuart Camp, including <strong>Messina Touring Group</strong>, <strong>FKP Scorpio</strong>, <strong>Frontier Touring</strong> and <strong>Kilimanjaro Live</strong></div>
-      </div>
-      <div class="rank-row">
-        <div class="rank-num">5</div>
-        <div>
-          <div class="rank-artist">U2</div>
-          <div class="rank-tour">360° Tour · 2009–2011</div>
-        </div>
-        <div class="rank-gross">$736M<span>Approx. gross revenue</span></div>
-        <div class="rank-promoter"><strong>Arthur Fogel</strong> through <strong>Live Nation Global Touring</strong></div>
-      </div>
+      <div class="pitch-kicker">Positioning</div>
+      <div class="pitch-title">Independent, but commercially useful</div>
+      <div class="pitch-copy"><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> is not a ticket seller, resale platform, or insider feed. It is a neutral guidance layer that can send fans back into official inventory, surface legitimate alternatives, and create new discovery paths for the wider live ecosystem.</div>
+      <div class="pitch-copy" style="margin-top:8px;font-weight:800;color:var(--text);">Hope isn’t a strategy. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> is.</div>
     </div>
   </div>
 
   <div class="pfooter">
     <div class="pfooter-inner">
-      <div>onTour publishes at announcement — before the on-sale, before the queue rage, before the Senate subpoena.</div>
-      <button class="pfooter-btn" onclick="openAbout()">About this project, the data, and the argument →</button>
+      <div><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> publishes before the queue, stays active during onsale, and keeps working throughout the life of the tour.</div>
+      <button class="pfooter-btn" onclick="openAbout()">About this project →</button>
     </div>
   </div>
-  </div>
-
+</div>
 </div>
 
 
