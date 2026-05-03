@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1052,40 +1053,107 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     Tour Ticket Intelligence™
   </div>
 
+  <!-- FAN MODE OPENING -->
+<div class="fan-mission" data-mode-section="fan">
+
   <div class="fan-mission-title">
-    Most fans go in blind.<br>onTour gives you a plan.
-  </div>
-
-  <div class="fan-mission-copy">
-    <strong><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> shows you where you actually have a shot — before you enter the on-sale.</strong>
-  </div>
-
-  <div class="fan-mission-copy" style="margin-top:10px;font-size:11px;line-height:1.55;color:var(--text3);">
-    Live signals are still being expanded. Early access shows where demand is forming and where options are opening before they become obvious everywhere else.
-  </div>
-
-  <div class="fan-mission-copy" style="margin-top:10px;">
-    For superstar tours, your hometown show may be the obvious first choice — and still a long shot. Demand can outweigh supply everywhere.
-    <br><br>
-    <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> gives you real signals, market pressure reads, alerts, and options you can act on before other fans catch up: added dates, better markets, travel-worthy shows, returned-ticket windows, and legitimate access paths.
-    <br><br>
-    Don’t just hope your queue number is lucky. Check the tour, see the pressure, and know your next move.
-  </div>
-
-  <div class="fan-mission-copy" style="margin-top:12px;">
-    <strong>Not a ticketing platform.</strong><br>
-    Fan intelligence.<br>
-    <strong style="color:var(--green);">Free.</strong>
-  </div>
-
-  <div class="fan-mission-title" style="margin-top:14px;">
-    Hope is not a strategy.<br>
-    <span class="brand-inline">
-      <span class="wm-on">on</span><span class="wm-tour">Tour</span>
-    </span> is.
-  </div>
-
+  Getting concert tickets is a long shot.
 </div>
+
+<div class="fan-mission-title" style="margin-top:4px;">
+  onTour shows you where you actually <em>have</em> a shot.
+</div>
+
+<div class="fan-mission-copy">
+  See demand across markets, dates, and access paths
+</div>
+
+<div class="fan-mission-copy" style="margin-top:4px;">
+  —before everyone else piles in.
+</div>
+
+<div class="fan-mission-copy" style="margin-top:6px;">
+  For superstar tours, every market is competitive.
+</div>
+
+<div class="fan-mission-copy">
+  But not every market is equal.
+</div>
+
+<div class="fan-mission-copy" style="margin-top:10px;">
+  <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> shows you where demand is overloaded, where you still have a real chance, and what to do next.
+</div>
+
+<div class="fan-mission-copy" style="margin-top:10px;">
+  Real signals. Market pressure reads. Live alerts and second chances: added dates, better markets, travel options, returned-ticket windows, and legitimate access paths.
+</div>
+
+<div class="fan-mission-copy" style="margin-top:10px;font-size:11px;line-height:1.55;color:var(--text3);">
+  Signals are expanding in real time. Early access means seeing opportunities before everyone else does.
+</div>
+
+<div class="fan-mission-copy" style="margin-top:12px;">
+  <strong>Not a ticketing platform.</strong><br>
+  Fan intelligence.<br>
+  <strong style="color:var(--green);">Free.</strong>
+</div>
+
+<div class="fan-mission-title" style="margin-top:14px;">
+  Hope is not a strategy.<br>
+  <span class="brand-inline">
+    <span class="wm-on">on</span><span class="wm-tour">Tour</span>
+  </span> is.
+</div>
+
+  <div class="pitch-section" data-mode-section="fan" id="bestshot-preview">
+    <div class="bestshot-card" style="margin-bottom:0;">
+      <div class="track-kicker">Best Shot preview</div>
+      <div class="bestshot-head">
+        <div>
+          <div class="bestshot-title">Harry Styles — Together, Together</div>
+          <div class="bestshot-sub">Demand is extreme across announced residencies. Here’s the kind of read onTour gives you before you waste a move.</div>
+          <div class="bestshot-data-note">Guidance based on official listings, on-sale timing, market pressure, tour changes and public access paths.</div>
+        </div>
+        <div class="bestshot-phase">Live read</div>
+      </div>
+
+      <div class="bestshot-grid">
+        <div class="market-row">
+          <div class="market-main">
+            <div class="market-name">Returned-ticket request window — MSG</div>
+            <div class="market-note">Official access path for selected fans after returned/cancelled tickets are released.<br><span class="market-data">Best current access signal</span></div>
+          </div>
+          <div class="market-pill best">Best path</div>
+        </div>
+        <div class="market-row">
+          <div class="market-main">
+            <div class="market-name">Amsterdam / London / Mexico City</div>
+            <div class="market-note">Travel-worthy markets to monitor for late releases, resale movement, and added-date signals.<br><span class="market-data">Options beyond hometown demand</span></div>
+          </div>
+          <div class="market-pill better">Watch</div>
+        </div>
+        <div class="market-row">
+          <div class="market-main">
+            <div class="market-name">New York primary on-sale</div>
+            <div class="market-note">Extreme pressure. Don’t treat the biggest queue as your only plan.<br><span class="market-data">Avoid blind entry</span></div>
+          </div>
+          <div class="market-pill hard">Hard</div>
+        </div>
+      </div>
+
+      <div class="bestshot-move">
+        <div class="bestshot-label">Your move</div>
+        <div class="bestshot-copy">Start with the official returned-ticket path, keep alerts on, and watch travel markets where new access can open.</div>
+      </div>
+
+      <div class="bestshot-actions">
+        <button class="abt-btn primary-action" onclick="openBestShot('styles-2026')">See my best shot</button>
+        <button class="abt-btn alert-action" onclick="openAlertsModal('styles-2026')">Get Alerts</button>
+      </div>
+
+      <div class="bestshot-note">The point isn’t to promise easy tickets. It’s to show your strongest options before everyone else reacts.</div>
+    </div>
+  </div>
 
   <div class="divider"></div>
   <div class="sec-hdr" id="app-demo"><span class="sec-lbl">Current tours</span></div>
@@ -1652,6 +1720,21 @@ function openItinerary(id){
     const bar=document.getElementById('tabBar');
     if(bar) bar.scrollIntoView({behavior:'smooth',block:'nearest'});
   }
+}
+
+function openBestShot(id){
+  openTour(id);
+  const t=TOURS.find(x=>x.id===id);
+  if(!t) return;
+  const targetTabs={'styles-2026':4,'bruno-2026':0,'rush-2026':0};
+  const target=targetTabs[id] ?? 0;
+  curTab=target;
+  renderTabs(t);
+  renderTabContent(t,target);
+  setTimeout(()=>{
+    const card=document.querySelector('#tabCnt .bestshot-card') || document.getElementById('tabBar');
+    if(card) card.scrollIntoView({behavior:'smooth',block:'start'});
+  },120);
 }
 
 function openTourSignal(id){
