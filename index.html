@@ -3,6 +3,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1512,6 +1514,37 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
         <input class="alert-input" id="alertTravelMarkets" placeholder="Optional — e.g. Toronto, Vegas, London">
       </div>
       <div class="alert-section">
+        <div class="alert-label">Would you travel for a better shot?</div>
+        <label class="alert-option">
+          <input type="radio" name="alertTravelMode" value="local">
+          <div><div class="alert-opt-title">Stay local</div><div class="alert-opt-sub">Only alert me about my home market or nearby shows.</div></div>
+        </label>
+        <label class="alert-option">
+          <input type="radio" name="alertTravelMode" value="drive" checked>
+          <div><div class="alert-opt-title">Driving distance</div><div class="alert-opt-sub">I’d consider nearby markets if they offer a better shot.</div></div>
+        </label>
+        <label class="alert-option">
+          <input type="radio" name="alertTravelMode" value="fly">
+          <div><div class="alert-opt-title">Destination show</div><div class="alert-opt-sub">I’d fly for the right market, date, or package opportunity.</div></div>
+        </label>
+      </div>
+      <div class="alert-section">
+        <div class="alert-label">Packages and trip budget</div>
+        <label class="alert-option">
+          <input type="radio" name="alertPackageOpen" value="tickets" checked>
+          <div><div class="alert-opt-title">Tickets only</div><div class="alert-opt-sub">Just show me ticket access, alerts, and better-shot markets.</div></div>
+        </label>
+        <label class="alert-option">
+          <input type="radio" name="alertPackageOpen" value="hotel">
+          <div><div class="alert-opt-title">Ticket + hotel</div><div class="alert-opt-sub">I’m open to bundled hotel offers when they improve the trip.</div></div>
+        </label>
+        <label class="alert-option">
+          <input type="radio" name="alertPackageOpen" value="full">
+          <div><div class="alert-opt-title">Full trip</div><div class="alert-opt-sub">I’m open to flight + hotel + show opportunities.</div></div>
+        </label>
+        <input class="alert-input" id="alertTripBudget" placeholder="Optional trip budget — e.g. $750" inputmode="text">
+      </div>
+      <div class="alert-section">
         <div class="alert-label">Email or text alerts</div>
         <input class="alert-input" id="alertEmail" placeholder="Email — e.g. fan@example.com" inputmode="email">
         <input class="alert-input" id="alertPhone" placeholder="Mobile number — optional for texts" inputmode="tel">
@@ -2526,15 +2559,23 @@ function openAlertsModal(followId){
   const email=document.getElementById('alertEmail');
   const phone=document.getElementById('alertPhone');
   const travel=document.getElementById('alertTravelMarkets');
+  const tripBudget=document.getElementById('alertTripBudget');
   const err=document.getElementById('alertError');
   const scope=localStorage.getItem('alert_scope') || 'travel';
   const scopeInput=document.querySelector('input[name="alertScope"][value="'+scope+'"]');
   if(scopeInput) scopeInput.checked=true;
+  const travelMode=localStorage.getItem('alert_travel_mode') || 'drive';
+  const travelModeInput=document.querySelector('input[name="alertTravelMode"][value="'+travelMode+'"]');
+  if(travelModeInput) travelModeInput.checked=true;
+  const packageOpen=localStorage.getItem('alert_package_open') || 'tickets';
+  const packageInput=document.querySelector('input[name="alertPackageOpen"][value="'+packageOpen+'"]');
+  if(packageInput) packageInput.checked=true;
   if(name && localStorage.getItem('alert_name')) name.value=localStorage.getItem('alert_name');
   if(city && localStorage.getItem('alert_city')) city.value=localStorage.getItem('alert_city');
   if(email && localStorage.getItem('alert_email')) email.value=localStorage.getItem('alert_email');
   if(phone && localStorage.getItem('alert_phone')) phone.value=localStorage.getItem('alert_phone');
   if(travel && localStorage.getItem('alert_travel_markets')) travel.value=localStorage.getItem('alert_travel_markets');
+  if(tripBudget && localStorage.getItem('alert_trip_budget')) tripBudget.value=localStorage.getItem('alert_trip_budget');
   if(err) err.textContent='';
   ov.classList.add('open');
   ov.setAttribute('aria-hidden','false');
@@ -2553,6 +2594,9 @@ function saveAlertOptIn(){
   const email=(document.getElementById('alertEmail')?.value||'').trim();
   const phone=(document.getElementById('alertPhone')?.value||'').trim();
   const travel=(document.getElementById('alertTravelMarkets')?.value||'').trim();
+  const travelMode=(document.querySelector('input[name="alertTravelMode"]:checked')?.value||'drive');
+  const packageOpen=(document.querySelector('input[name="alertPackageOpen"]:checked')?.value||'tickets');
+  const tripBudget=(document.getElementById('alertTripBudget')?.value||'').trim();
   const scope=(document.querySelector('input[name="alertScope"]:checked')?.value||'travel');
   const consent=document.getElementById('alertConsent')?.checked;
   const err=document.getElementById('alertError');
@@ -2566,6 +2610,9 @@ function saveAlertOptIn(){
   localStorage.setItem('alert_phone',phone);
   localStorage.setItem('alert_scope',scope);
   localStorage.setItem('alert_travel_markets',travel);
+  localStorage.setItem('alert_travel_mode',travelMode);
+  localStorage.setItem('alert_package_open',packageOpen);
+  localStorage.setItem('alert_trip_budget',tripBudget);
   localStorage.setItem('alerts_enabled','1');
   localStorage.setItem('alerts_opted_in_at',new Date().toISOString());
   closeAlertsModal();
@@ -3094,7 +3141,10 @@ function getFanAlertPrefs(){
     enabled:localStorage.getItem('alerts_enabled') === '1',
     scope:localStorage.getItem('alert_scope') || 'travel',
     homeCity:getHomeCityOnly(),
-    travelMarkets:normalizeMarketName(localStorage.getItem('alert_travel_markets') || '')
+    travelMarkets:normalizeMarketName(localStorage.getItem('alert_travel_markets') || ''),
+    travelMode:localStorage.getItem('alert_travel_mode') || 'drive',
+    packageOpen:localStorage.getItem('alert_package_open') || 'tickets',
+    tripBudget:(localStorage.getItem('alert_trip_budget') || '').trim()
   };
 }
 
@@ -3152,6 +3202,11 @@ function scoreOpportunityCandidate(candidate, officialEvents, fanPrefs){
   if(marketMatch.travel){ score += 12; reasons.push('matches saved travel market'); }
   if(fanPrefs?.scope === 'local' && !marketMatch.home){ score -= 15; reasons.push('outside saved local-alert scope'); }
   if(fanPrefs?.scope === 'global'){ score += 5; reasons.push('all-tour alert scope enabled'); }
+  if(fanPrefs?.travelMode === 'drive' && (marketMatch.home || marketMatch.travel)){ score += 6; reasons.push('fits saved driving-distance preference'); }
+  if(fanPrefs?.travelMode === 'fly' && (candidate.official || marketMatch.travel)){ score += 10; reasons.push('fits saved destination-show preference'); }
+  if(fanPrefs?.packageOpen === 'hotel'){ score += 5; reasons.push('ticket + hotel package openness saved'); }
+  if(fanPrefs?.packageOpen === 'full'){ score += 8; reasons.push('flight + hotel + show openness saved'); }
+  if(fanPrefs?.tripBudget){ score += 3; reasons.push('trip budget saved for package matching'); }
 
   if(marketScore >= 70){ score += 10; reasons.push('scores as a better-shot market'); }
   if(demandPressure <= 4){ score += 8; reasons.push('lower demand-pressure read'); }
@@ -3831,3 +3886,6 @@ if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.ser
 
 </body>
 </html>
+
+
+
