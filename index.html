@@ -1654,6 +1654,41 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 </div>
 
 <script>
+  <script>
+
+const PREVIEW_PASSWORD = "ontour-may";
+
+(function enforcePreviewPassword(){
+  if (localStorage.getItem("ontour_access_ok") === "true") return;
+
+  document.documentElement.innerHTML = `
+    <body style="margin:0;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;background:#f0ebe1;">
+      <div style="text-align:center">
+        <h1>onTour — Private Preview</h1>
+        <p>Enter password to continue</p>
+        <input id="pw" type="password" placeholder="Password" style="padding:10px;margin-top:10px">
+        <br><br>
+        <button onclick="checkPw()" style="padding:10px 16px">Enter</button>
+        <div id="err" style="color:red;margin-top:10px"></div>
+      </div>
+    </body>
+  `;
+
+  window.checkPw = function(){
+    const val = document.getElementById("pw").value;
+    if (val === PREVIEW_PASSWORD) {
+      localStorage.setItem("ontour_access_ok","true");
+      location.reload();
+    } else {
+      document.getElementById("err").innerText = "Wrong password";
+    }
+  };
+})();
+
+
+// 👇 YOUR EXISTING CODE CONTINUES BELOW
+
+</script>
 /* ═══════════ DATA ═══════════ */
 const PILLARS=[
   {id:'supply',cls:'p-red',icon:'📊',title:'Supply & demand math',sub:'The ratio no one publishes before the sale',
