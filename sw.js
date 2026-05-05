@@ -1,4 +1,4 @@
-const CACHE = 'ontour-v15';
+const CACHE = 'ontour-v16';
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 
 const ASSETS = [
