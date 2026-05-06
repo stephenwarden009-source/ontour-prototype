@@ -1253,7 +1253,7 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 <div class="fan-mission-copy" style="margin-top:12px;">
   <strong>Not a ticketing platform.</strong><br>
   Fan intelligence.<br>
-  <strong style="color:var(--green);">Free.</strong>
+  <span class="free-tag">Free</span>
 </div>
 
 <div class="fan-mission-title" style="margin-top:14px;">
@@ -1666,91 +1666,106 @@ const PREVIEW_PASSWORD = "ontour-may";
   <title>onTour — Private Preview</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body{
-      margin:0;
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:#f0ebe1;
-      color:#1a1208;
-      font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-      padding:24px;
-    }
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f0ebe1;
+    color:#1a1208;
+    font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    padding:24px;
+  }
 
-    .card{
-      width:100%;
-      max-width:380px;
-      background:#e8e2d6;
-      border:1px solid rgba(26,18,8,.15);
-      border-radius:20px;
-      padding:28px 22px;
-      text-align:center;
-    }
+  .card{
+    width:100%;
+    max-width:380px;
+    background:#e8e2d6;
+    border:1px solid rgba(26,18,8,.15);
+    border-radius:20px;
+    padding:28px 22px;
+    text-align:center;
+  }
 
-    .brand{
-      font-size:30px;
-      font-weight:800;
-      margin-bottom:6px;
-    }
+  .brand{
+    font-size:30px;
+    font-weight:800;
+    margin-bottom:6px;
+  }
 
-    .brand .on{color:#1a6b3a;}
-    .brand .tour{font-style:italic;}
+  .brand .on{color:#1a6b3a;}
+  .brand .tour{font-style:italic;}
 
-    .tag{
-      font-size:12px;
-      letter-spacing:.12em;
-      text-transform:uppercase;
-      opacity:.6;
-      margin-bottom:18px;
-    }
+  .tag{
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    opacity:.6;
+    margin-bottom:18px;
+  }
 
-    h1{
-      font-size:20px;
-      margin:0 0 8px;
-    }
+  h1{
+    font-size:20px;
+    margin:0 0 8px;
+  }
 
-    p{
-      font-size:13px;
-      opacity:.7;
-      margin:0 0 18px;
-      line-height:1.5;
-    }
+  p{
+    font-size:13px;
+    opacity:.7;
+    margin:0 0 18px;
+    line-height:1.5;
+  }
 
-    input{
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid rgba(26,18,8,.2);
-      background:#f0ebe1;
-      font-size:14px;
-      margin-bottom:10px;
-    }
+  input{
+    width:100%;
+    padding:12px;
+    border-radius:12px;
+    border:1px solid rgba(26,18,8,.2);
+    background:#f0ebe1;
+    font-size:14px;
+    margin-bottom:10px;
+  }
 
-    button{
-      width:100%;
-      padding:12px;
-      border:none;
-      border-radius:999px;
-      background:#1a6b3a;
-      color:#fff;
-      font-weight:800;
-      cursor:pointer;
-    }
+  button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:999px;
+    background:#1a6b3a;
+    color:#fff;
+    font-weight:800;
+    cursor:pointer;
+  }
 
-    .err{
-      font-size:12px;
-      color:#b5291c;
-      margin-top:10px;
-      min-height:16px;
-    }
+  .err{
+    font-size:12px;
+    color:#b5291c;
+    margin-top:10px;
+    min-height:16px;
+  }
 
-    .signal{
-      margin-top:18px;
-      font-size:11px;
-      opacity:.5;
-    }
-  </style>
+  .signal{
+    margin-top:18px;
+    font-size:11px;
+    opacity:.5;
+  }
+
+  /* ✅ ADD THIS */
+  .free-tag{
+    display:inline-block;
+    background:#1a6b3a;
+    color:#fff;
+    font-weight:900;
+    font-size:12px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    padding:4px 8px;
+    border-radius:6px;
+    margin-top:6px;
+  }
+
+</style>
 </head>
 
 <body>
