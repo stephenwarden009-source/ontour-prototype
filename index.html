@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -940,256 +941,342 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 
 </style>
 </head>
-<body class="mode-industry">
+<body class="mode-fan">
+
+<!-- ══ NDA GATE ══ -->
+<!--
+  onTour — NDA Clickwrap Gate  (app-matched branding)
+  ─────────────────────────────────────────────────────
+  DROP-IN: paste right after <body>, before any existing content.
+  Set CORRECT_PASSWORD below. Commit. Done.
+-->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,800;1,800&display=swap');
+
+  :root {
+    --ot-bg:        #f0ebe1;
+    --ot-surface:   #faf8f4;
+    --ot-ink:       #1a1208;
+    --ot-ink-mid:   #4a3f2f;
+    --ot-ink-muted: #8c7f6e;
+    --ot-rule:      #d9d2c5;
+    --ot-font:      -apple-system, "Segoe UI", Arial, sans-serif;
+  }
+
+  #nda-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--ot-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    font-family: var(--ot-font);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #nda-gate.hidden { display: none; }
+
+  .ot-card {
+    background: var(--ot-surface);
+    border: 1px solid var(--ot-rule);
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    padding: 2rem 2rem 1.75rem;
+  }
+
+  .ot-wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+    font-family: 'Montserrat', -apple-system, 'Segoe UI', Arial, sans-serif;
+  }
+
+  .ot-wordmark .on {
+    font-family: 'Montserrat', -apple-system, 'Segoe UI', Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a6b3a;          /* exact app green: var(--green) */
+    font-style: normal;
+    line-height: 1;
+  }
+
+  .ot-wordmark .tour {
+    font-family: 'Montserrat', -apple-system, 'Segoe UI', Arial, sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0d0d0d;          /* exact app ink: var(--ink) */
+    font-style: normal;      /* NOT italic — uses transform skew like app */
+    transform: skewX(-10deg);
+    display: inline-block;
+    margin-left: 2px;
+    line-height: 1;
+  }
+
+  .ot-tagline {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--ot-ink-muted);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 1.4rem;
+  }
+
+  .ot-rule {
+    height: 1px;
+    background: var(--ot-rule);
+    margin-bottom: 1.25rem;
+  }
+
+  .ot-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ot-ink-muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .ot-terms {
+    background: var(--ot-bg);
+    border: 1px solid var(--ot-rule);
+    border-radius: 8px;
+    padding: 0.95rem 1.1rem;
+    font-size: 0.76rem;
+    color: var(--ot-ink-mid);
+    line-height: 1.65;
+    max-height: 175px;
+    overflow-y: auto;
+    margin-bottom: 1.1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ot-terms p { margin: 0 0 0.6rem; }
+  .ot-terms p:last-child { margin-bottom: 0; }
+  .ot-terms strong { color: var(--ot-ink); font-weight: 600; }
+
+  .ot-check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 1.2rem;
+    cursor: pointer;
+  }
+
+  .ot-check-row input[type="checkbox"] {
+    margin-top: 2px;
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    accent-color: var(--ot-ink);
+    cursor: pointer;
+  }
+
+  .ot-check-text {
+    font-size: 0.82rem;
+    color: var(--ot-ink-mid);
+    line-height: 1.5;
+    user-select: none;
+  }
+
+  .ot-check-text strong { color: var(--ot-ink); font-weight: 600; }
+
+  .ot-pw-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .ot-pw-input {
+    flex: 1;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid var(--ot-rule);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--ot-ink);
+    background: var(--ot-bg);
+    outline: none;
+    font-family: var(--ot-font);
+    transition: border-color 0.15s;
+  }
+
+  .ot-pw-input::placeholder { color: var(--ot-ink-muted); }
+  .ot-pw-input:focus { border-color: var(--ot-ink); }
+  .ot-pw-input.ot-error { border-color: #a0341e; }
+
+  .ot-btn {
+    padding: 0.65rem 1.3rem;
+    background: var(--ot-ink);
+    color: var(--ot-bg);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    font-family: var(--ot-font);
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s;
+  }
+
+  .ot-btn:hover:not(:disabled) { opacity: 0.82; }
+  .ot-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  .ot-error-msg {
+    font-size: 0.76rem;
+    color: #a0341e;
+    min-height: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .ot-gate-footer {
+    font-size: 0.65rem;
+    color: var(--ot-ink-muted);
+    text-align: center;
+    margin-top: 1rem;
+    letter-spacing: 0.03em;
+  }
+
+  .ot-terms::-webkit-scrollbar { width: 4px; }
+  .ot-terms::-webkit-scrollbar-track { background: transparent; }
+  .ot-terms::-webkit-scrollbar-thumb { background: var(--ot-rule); border-radius: 2px; }
+
+  @media (max-width: 480px) {
+    .ot-card { padding: 1.5rem 1.25rem 1.4rem; }
+    .ot-wordmark { font-size: 1.75rem; }
+    .ot-terms { max-height: 140px; }
+  }
+</style>
+
+<div id="nda-gate" role="dialog" aria-modal="true" aria-label="Confidentiality agreement">
+  <div class="ot-card">
+
+    <div class="ot-wordmark"><span class="on">on</span><span class="tour">Tour</span></div>
+    <div class="ot-tagline">Tour Ticket Intelligence™ &nbsp;·&nbsp; Private Access</div>
+
+    <div class="ot-rule"></div>
+
+    <div class="ot-section-label">Confidentiality Agreement</div>
+
+    <div class="ot-terms" tabindex="0">
+      <p>This product and all information, materials, concepts, architecture, data methodologies, business strategy, and supporting documents accessible via this platform (collectively, <strong>"Confidential Information"</strong>) are the proprietary and confidential intellectual property of <strong>Steve Warden / onTour · Tour Ticket Intelligence™</strong>.</p>
+
+      <p>By proceeding, you agree that: <strong>(a)</strong> all Confidential Information is strictly confidential and will be held in confidence; <strong>(b)</strong> you will not disclose, reproduce, distribute, or transmit any Confidential Information to any third party without prior written consent of onTour; <strong>(c)</strong> you will use Confidential Information solely to evaluate a potential business relationship with onTour; and <strong>(d)</strong> you will not develop, commission, or facilitate any product or service substantially similar to or competitive with the onTour concept based on information accessed herein.</p>
+
+      <p>Nothing herein grants any license, right, title, or interest in any Confidential Information or intellectual property of onTour. These obligations survive the conclusion of any evaluation or discussion.</p>
+
+      <p>Your agreement is recorded with a timestamp upon entry. This constitutes a binding clickwrap agreement under applicable law.</p>
+    </div>
+
+    <label class="ot-check-row">
+      <input type="checkbox" id="nda-checkbox" />
+      <span class="ot-check-text">
+        I have read and agree to the confidentiality terms above.
+        I understand this is <strong>proprietary IP</strong> and I am bound by the obligations described.
+      </span>
+    </label>
+
+    <div class="ot-pw-row">
+      <input
+        type="password"
+        id="nda-password"
+        class="ot-pw-input"
+        placeholder="Access password"
+        autocomplete="current-password"
+        aria-label="Access password"
+      />
+      <button id="nda-enter-btn" class="ot-btn" disabled>Enter</button>
+    </div>
+
+    <div class="ot-error-msg" id="nda-error" aria-live="polite"></div>
+
+    <div class="ot-gate-footer">
+      onTour &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; © 2026 Steve Warden &nbsp;·&nbsp; steve@ontourtv.com
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  const CORRECT_PASSWORD = "YOUR_PASSWORD_HERE"; // ← set your password here
+  const SESSION_KEY      = "ontour_nda_v1";
+
+  const gate     = document.getElementById("nda-gate");
+  const checkbox = document.getElementById("nda-checkbox");
+  const pwInput  = document.getElementById("nda-password");
+  const enterBtn = document.getElementById("nda-enter-btn");
+  const errorEl  = document.getElementById("nda-error");
+
+  // Skip if already agreed this browser session
+  try {
+    const d = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "{}");
+    if (d.agreed && d.ts) { gate.classList.add("hidden"); return; }
+  } catch(e) { sessionStorage.removeItem(SESSION_KEY); }
+
+  checkbox.addEventListener("change", function() {
+    enterBtn.disabled = !this.checked;
+    if (this.checked) errorEl.textContent = "";
+  });
+
+  pwInput.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !enterBtn.disabled) attempt();
+  });
+
+  enterBtn.addEventListener("click", attempt);
+
+  function attempt() {
+    const pw = pwInput.value.trim();
+    if (!checkbox.checked) {
+      errorEl.textContent = "Please agree to the confidentiality terms to continue.";
+      return;
+    }
+    if (!pw) {
+      errorEl.textContent = "Please enter the access password.";
+      pwInput.classList.add("ot-error"); pwInput.focus(); return;
+    }
+    if (pw !== CORRECT_PASSWORD) {
+      errorEl.textContent = "Incorrect password. Please check with your contact at onTour.";
+      pwInput.classList.add("ot-error"); pwInput.value = ""; pwInput.focus(); return;
+    }
+    // Success — record agreement and open the app
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+      agreed: true, ts: new Date().toISOString()
+    }));
+    gate.classList.add("hidden");
+  }
+})();
+</script>
+
+<!-- ══ /NDA GATE ══ -->
+
 <div class="app">
 
 <!-- MODE BAR -->
-<div class="mode-bar" aria-label="onTour mode toggle">
+<div class="mode-bar" aria-label="onTour navigation">
   <div class="mode-bar-inner">
     <button class="back-btn" id="backBtn" onclick="goHome()">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style="opacity:.85"><path d="M8.5 2L3.5 6.5L8.5 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Back
     </button>
     <a class="mode-wordmark" onclick="goHome()"><span class="mode-on">on</span><span class="mode-tour">Tour</span></a>
-    <div class="mode-toggle">
-      <button class="mode-btn active" type="button" data-mode-btn="industry" onclick="setMode('industry')">Industry Brief</button>
-      <button class="mode-btn" type="button" data-mode-btn="fan" onclick="setMode('fan')">Fan App</button>
-    </div>
-    <button class="mode-about" onclick="openAbout()">About</button>
-    <span id="hdrTag">Industry</span>
+    <span id="hdrTag" style="display:none">tour</span>
   </div>
 </div>
 
 <!-- ══ SCREEN: HOME ══ -->
 <div class="screen active" id="screen-home">
 
-<div data-mode-section="industry">
 
-  <div class="pitch-section" id="industry-animated-infographic">
-
-  <style>
-    .pulse-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:6px;animation:pulseSignal 1.6s infinite;vertical-align:middle}
-    @keyframes pulseSignal{0%{box-shadow:0 0 0 0 rgba(26,107,58,.45)}70%{box-shadow:0 0 0 8px rgba(26,107,58,0)}100%{box-shadow:0 0 0 0 rgba(26,107,58,0)}}
-    .flow-line{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-    .flow-step{background:var(--bg);border:.5px solid var(--border2);border-radius:11px;padding:10px 11px;font-size:12px;font-weight:800;line-height:1.35}
-    .flow-arrow{text-align:center;color:var(--green);font-size:18px;font-weight:900;animation:breatheArrow 1.8s infinite;line-height:1}
-    @keyframes breatheArrow{0%,100%{opacity:.45;transform:translateY(0)}50%{opacity:1;transform:translateY(2px)}}
-    .demand-bars{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-    .bar-row{display:grid;grid-template-columns:72px 1fr;gap:8px;align-items:center;font-size:10px;font-weight:800;color:var(--text2)}
-    .bar-track{height:8px;background:rgba(26,18,8,.08);border-radius:999px;overflow:hidden}
-    .bar-fill{height:100%;border-radius:999px;background:var(--red);animation:loadBar 1.2s ease-out both}
-    .bar-fill.green{background:var(--green)}.bar-fill.amber{background:var(--amber)}
-    @keyframes loadBar{from{width:0}}
-    .signal-chain{display:grid;grid-template-columns:1fr;gap:7px;margin-top:10px}
-    .signal-step{background:var(--green2);border:.5px solid var(--greenb);border-radius:10px;padding:9px 10px;font-size:12px;font-weight:900}
-    .mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-    .mini-tile{background:var(--bg);border:.5px solid var(--border2);border-radius:10px;padding:10px;font-size:12px;font-weight:800;line-height:1.35}
-    @media(max-width:340px){.mini-grid{grid-template-columns:1fr}.bar-row{grid-template-columns:62px 1fr}}
-  </style>
-
-  <div class="pitch-card" style="border-color:var(--greenb);background:linear-gradient(180deg,var(--green2),var(--bg))">
-    <div class="pitch-kicker"><span class="pulse-dot"></span>Executive snapshot</div>
-    <div class="pitch-title">Demand isn’t the problem.<br>Distribution is.</div>
-    <div class="pitch-copy">
-      Superstar tours create more demand than the peak can absorb. Fans pile into the same markets, moments, and inventory with no real read on where they actually have a shot.
-    </div>
-  </div>
-
-  <div class="pitch-card">
-    <div class="pitch-kicker">Today</div>
-    <div class="flow-line">
-      <div class="flow-step">Fan intent</div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-step">Same hometown market</div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-step">Same Day 1 on-sale</div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-step" style="border-color:var(--redb);background:var(--red2);color:var(--red)">Failure + backlash</div>
-    </div>
-  </div>
-
-  <div class="pitch-card">
-    <div class="pitch-kicker">The missing layer</div>
-    <div class="signal-chain">
-      <div class="signal-step">Signal</div>
-      <div class="flow-arrow">↓</div>
-      <div class="signal-step">Interpretation</div>
-      <div class="flow-arrow">↓</div>
-      <div class="signal-step">Fan action</div>
-      <div class="flow-arrow">↓</div>
-      <div class="signal-step">Recovered demand</div>
-    </div>
-    <div class="pitch-copy" style="margin-top:10px">
-      The system shows inventory. <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> shows fans what to do next.
-    </div>
-  </div>
-
-  <div class="pitch-card">
-    <div class="pitch-kicker">Demand behavior</div>
-    <div class="pitch-copy"><strong>Before: concentrated pressure</strong></div>
-    <div class="demand-bars">
-      <div class="bar-row"><span>NYC</span><div class="bar-track"><div class="bar-fill" style="width:96%"></div></div></div>
-      <div class="bar-row"><span>Toronto</span><div class="bar-track"><div class="bar-fill" style="width:90%"></div></div></div>
-      <div class="bar-row"><span>Chicago</span><div class="bar-track"><div class="bar-fill amber" style="width:72%"></div></div></div>
-      <div class="bar-row"><span>Denver</span><div class="bar-track"><div class="bar-fill green" style="width:42%"></div></div></div>
-    </div>
-    <div class="pitch-copy" style="margin-top:13px"><strong>After: demand has somewhere else to go</strong></div>
-    <div class="demand-bars">
-      <div class="bar-row"><span>NYC</span><div class="bar-track"><div class="bar-fill green" style="width:64%"></div></div></div>
-      <div class="bar-row"><span>Toronto</span><div class="bar-track"><div class="bar-fill green" style="width:60%"></div></div></div>
-      <div class="bar-row"><span>Chicago</span><div class="bar-track"><div class="bar-fill green" style="width:58%"></div></div></div>
-      <div class="bar-row"><span>Denver</span><div class="bar-track"><div class="bar-fill green" style="width:52%"></div></div></div>
-    </div>
-    <div class="demand-bottom">Same demand. De-pressurized.</div>
-  </div>
-
-  <div class="pitch-card">
-    <div class="pitch-kicker">Demand expansion</div>
-    <div class="pitch-title">More ways to convert the same intent</div>
-    <div class="mini-grid">
-      <div class="mini-tile">🌍 Destination shows</div>
-      <div class="mini-tile">📍 Secondary markets</div>
-      <div class="mini-tile">📅 Multi-night runs</div>
-      <div class="mini-tile">🏨 Ticket + hotel packages</div>
-    </div>
-  </div>
-
-  <div class="pitch-card" style="border-color:var(--greenb)">
-    <div class="pitch-kicker">Revenue impact</div>
-    <div class="flow-line">
-      <div class="flow-step">Failed local demand</div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-step">Guided alternate path</div>
-      <div class="flow-arrow">↓</div>
-      <div class="flow-step" style="border-color:var(--greenb);background:var(--green2);color:var(--green)">Recovered revenue</div>
-    </div>
-  </div>
-
-  <div class="pitch-card">
-    <div class="pitch-kicker">New fan data</div>
-    <div class="mini-grid">
-      <div class="mini-tile">Travel</div>
-      <div class="mini-tile">Budget</div>
-      <div class="mini-tile">Flexibility</div>
-      <div class="mini-tile">Package openness</div>
-    </div>
-    <div class="pitch-copy" style="margin-top:10px">Captured before purchase, where decisions are still being shaped.</div>
-  </div>
-
-  <div class="pitch-card" style="background:var(--ink);border-color:var(--ink);color:#fff">
-    <div class="pitch-title" style="color:#fff">Better behavior → better outcomes</div>
-    <div style="margin-top:10px;font-weight:800;color:rgba(255,255,255,.78);line-height:1.55">
-      <span class="brand-inline"><span class="wm-on" style="color:#8bc4a2">on</span><span class="wm-tour" style="color:#fff">Tour</span></span>
-      improves how demand converts — without changing ticketing systems.
-    </div>
-  </div>
-
-</div>
-
-  <div class="pitch-section" id="industry-orientation">
-    <div class="pitch-card" style="border-color:var(--border2);background:var(--bg2)">
-      <div class="pitch-kicker">Industry brief</div>
-      <div class="pitch-copy" style="margin:0">
-        The deeper case for how <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> turns fan confusion into guided action, better outcomes, and incremental revenue.
-      </div>
-    </div>
-  </div>
-
-  <div class="pitch-section" id="industry-why-now">
-    <div class="pitch-card">
-      <div class="pitch-kicker">Why this matters now</div>
-      <div class="pitch-title">Fans don’t care how the system works.<br>They care whether they can get a ticket.</div>
-      <div class="pitch-copy">
-        <p>When fans do not see a fair, understandable path to access, the system feels opaque, unfair, and impossible to navigate.</p>
-        <p>That perception fuels backlash, media cycles, and regulatory pressure.</p>
-      </div>
-      <div class="pitch-list">
-        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Visibility</div><div class="pitch-point-copy">Fans see pressure and access paths before the on-sale.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Options</div><div class="pitch-point-copy">Markets, dates, travel paths, and re-entry windows become actionable.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">Better experience</div><div class="pitch-point-copy">The journey shifts from blind competition to informed decisions.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="pitch-section" id="industry-issue">
-    <div class="pitch-card">
-      <div class="pitch-kicker">The issue</div>
-      <div class="pitch-title">The system sees demand. It doesn’t shape behavior.</div>
-      <div class="pitch-copy">
-        <p><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> operates before the transaction — where fans decide where to go, whether to travel, and what to do next.</p>
-      </div>
-      <div class="demand-bottom">The fix is showing pressure, options, and next moves early enough to act.</div>
-    </div>
-  </div>
-
-  <div class="pitch-section" id="industry-solution">
-    <div class="pitch-card demand-pattern-card">
-      <div class="pitch-kicker">What onTour does</div>
-      <div class="pitch-title">Same demand. Better behavior.</div>
-      <div class="pitch-list">
-        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Shows pressure early</div><div class="pitch-point-copy">Fans see when markets are oversubscribed before they lose.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Surfaces real options</div><div class="pitch-point-copy">Dates, markets, travel paths, added shows, and re-entry windows.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">Keeps intent alive</div><div class="pitch-point-copy">Failed demand is redirected instead of lost.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="pitch-section" id="industry-demand-expansion">
-    <div class="pitch-card" style="border-color:var(--greenb);background:linear-gradient(180deg,var(--bg2),var(--bg))">
-      <div class="pitch-kicker">Demand expansion</div>
-      <div class="pitch-title">Not just redistribution. New conversion paths.</div>
-      <div class="pitch-copy">
-        <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> identifies travel-ready, flexible, high-intent fans before they commit — then surfaces destination shows, multi-night runs, secondary markets, and package inventory.
-        <br><br>
-        <strong>This expands both access and total spend.</strong>
-      </div>
-    </div>
-  </div>
-
-  <div class="pitch-section" id="industry-money">
-    <div class="pitch-card" style="border-color:var(--greenb);background:linear-gradient(180deg,var(--bg2),var(--bg))">
-      <div class="pitch-kicker">Revenue impact</div>
-      <div class="pitch-title">You monetize the spike.<br><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> expands what converts.</div>
-      <div class="pitch-list">
-        <div class="pitch-point"><div class="pitch-num">1</div><div><div class="pitch-point-title">Markets</div><div class="pitch-point-copy">Travel-driven conversion.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">2</div><div><div class="pitch-point-title">Dates</div><div class="pitch-point-copy">Added shows and late inventory.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">3</div><div><div class="pitch-point-title">Ecosystem</div><div class="pitch-point-copy">Related shows and artists.</div></div></div>
-        <div class="pitch-point"><div class="pitch-num">4</div><div><div class="pitch-point-title">Packages</div><div class="pitch-point-copy">Ticket + hotel + travel unlocked earlier.</div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="pitch-section" id="industry-data-layer">
-    <div class="pitch-card">
-      <div class="pitch-kicker">New data layer</div>
-      <div class="pitch-title">Pre-transaction fan intent</div>
-      <div class="pitch-copy">
-        <span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> captures willingness to travel, budget range, flexibility, and package openness before purchase.
-        <br><br>
-        <strong>This data does not exist in current ticketing flows.</strong>
-        <br><br>
-        It enables smarter demand routing, better targeting, and more efficient inventory performance.
-      </div>
-    </div>
-  </div>
-
-  <div class="pitch-section" id="industry-close">
-    <div class="pitch-card" style="background:var(--ink);border-color:var(--ink);color:#fff">
-      <div class="pitch-title" style="color:#fff">Better demand behavior = better outcomes.</div>
-      <div style="margin-top:12px;font-weight:900;color:rgba(255,255,255,.78);line-height:1.55">
-        <span class="brand-inline"><span class="wm-on" style="color:#8bc4a2">on</span><span class="wm-tour" style="color:#ffffff">Tour</span></span> improves how demand converts — across markets, dates, packages, and the live ecosystem — without changing ticketing systems.
-      </div>
-    </div>
-  </div>
-
-  <div class="pfooter">
-    <div class="pfooter-inner">
-      <div><span class="brand-inline"><span class="wm-on">on</span><span class="wm-tour">Tour</span></span> publishes before the queue, stays active during on-sale, and keeps working throughout the life of the tour.</div>
-      <button class="pfooter-btn" onclick="openAbout()">About this project →</button>
-    </div>
-  </div>
-
-  </div>
 
   <div data-mode-section="fan">
   <div class="fan-mission">
@@ -1252,8 +1339,8 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 
 <div class="fan-mission-copy" style="margin-top:12px;">
   <strong>Not a ticketing platform.</strong><br>
-  <strong>Fan intelligence.</strong><br>
-  <strong style="color:#1a6b3a;font-size:20px;font-weight:900;line-height:1.2;">Free.</strong>
+  Fan intelligence.<br>
+  <strong style="color:var(--green);">Free.</strong>
 </div>
 
 <div class="fan-mission-title" style="margin-top:14px;">
@@ -1348,6 +1435,14 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
   </div>
 
 </div>
+
+  <!-- ABOUT BUTTON — LANDING PAGE FOOTER -->
+  <div class="pfooter" style="padding-top:8px">
+    <div class="pfooter-inner" style="border-top:.5px solid var(--border2);padding-top:14px;text-align:center">
+      <button class="abt-btn" onclick="openAbout()" style="font-size:12px;padding:8px 20px;border-radius:20px">About onTour</button>
+      <div style="margin-top:8px;font-size:10px;color:var(--text3)">Tour Ticket Intelligence™ · © 2026 Steve Warden</div>
+    </div>
+  </div>
 
 </div><!-- /SCREEN-HOME REPAIR CLOSE -->
 
@@ -1456,54 +1551,49 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
   <div class="abt-h">A fan intelligence layer for high-demand live events</div>
 
   <div class="abt-hero-card">
-  <div class="abt-kicker">About onTour</div>
-  <h2 class="abt-h">Where you actually have a shot.</h2>
-  <p class="abt-b">
-    <strong>onTour shows fans where they actually have a shot at tickets — and what to do next.</strong>
-  </p>
-  <p class="abt-b">
-    It reads the live ticket market, filters the noise, and turns official signals into clear decisions.
-  </p>
-</div>
+    <div class="abt-kicker">About onTour</div>
+    <h2 class="abt-h">Where you actually have a shot.</h2>
+    <p class="abt-b">
+      <strong>onTour shows fans where they actually have a shot at tickets — and what to do next.</strong>
+    </p>
+    <p class="abt-b">
+      It reads the live ticket market, filters noise, and turns official signals into clear, actionable intelligence — free, before the queue opens.
+    </p>
+  </div>
 
 <div class="abt-div"></div>
 
-<h3 class="abt-h">What it does</h3>
+<h3 class="abt-h">What onTour does</h3>
 
-<p class="abt-b">
-  onTour helps fans understand:
-</p>
+<p class="abt-b">For any high-demand tour, onTour gives fans a real read before the on-sale opens:</p>
 
 <div class="abt-process">
   <div class="abt-step">
     <div class="abt-step-num">1</div>
     <div>
-      <div class="abt-step-title">Where to try first</div>
-      <div class="abt-step-copy">The market, date, or access path that gives you the clearest shot.</div>
+      <div class="abt-step-title">Market pressure map</div>
+      <div class="abt-step-copy">See which cities are oversubscribed and which markets give you a real shot — before you commit to one.</div>
     </div>
   </div>
-
   <div class="abt-step">
     <div class="abt-step-num">2</div>
     <div>
-      <div class="abt-step-title">Where you may have a better shot</div>
-      <div class="abt-step-copy">Not every city, night, or onsale window has the same pressure.</div>
+      <div class="abt-step-title">Access paths</div>
+      <div class="abt-step-copy">Presales, verified fan windows, travel markets, added shows, and returned ticket windows — all mapped out.</div>
     </div>
   </div>
-
   <div class="abt-step">
     <div class="abt-step-num">3</div>
     <div>
-      <div class="abt-step-title">What to avoid</div>
-      <div class="abt-step-copy">Some markets are obvious long shots. onTour helps you see that before you waste your shot.</div>
+      <div class="abt-step-title">Live official signals</div>
+      <div class="abt-step-copy">onTour monitors official sources for new dates, capacity changes, and onsale updates — filtering noise from fan speculation.</div>
     </div>
   </div>
-
   <div class="abt-step">
     <div class="abt-step-num">4</div>
     <div>
-      <div class="abt-step-title">What to do if you miss</div>
-      <div class="abt-step-copy">Watch for added shows, returned tickets, resale movement, and connected opportunities.</div>
+      <div class="abt-step-title">After a miss</div>
+      <div class="abt-step-copy">Added shows, returned tickets, resale patterns, and connected ecosystem opportunities — tracked through the full tour lifecycle.</div>
     </div>
   </div>
 </div>
@@ -1513,31 +1603,26 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 <h3 class="abt-h">How it works</h3>
 
 <p class="abt-b">
-  onTour combines official ticket data, real-time signals, tour patterns, and fan preferences.
+  onTour combines official ticket platform data, real-time tour signals, historical tour patterns, venue capacity math, and your saved preferences.
 </p>
 
 <p class="abt-b">
-  That means new dates, status changes, added shows, market pressure, location, travel flexibility, and timing can all become part of the recommendation.
+  Save your home market and travel range — onTour personalizes every brief to your situation, surfacing the dates, cities, and access paths that match where you are and how far you'll go.
 </p>
 
 <div class="abt-note">
-  <strong>The goal is simple:</strong> give fans a clear plan they can act on immediately.
+  <strong>The goal:</strong> give fans a clear plan they can act on — before the queue, not during it.
 </div>
 
 <div class="abt-div"></div>
 
-<h3 class="abt-h">What makes it different</h3>
+<h3 class="abt-h">What onTour is not</h3>
 
 <p class="abt-b">
-  Most platforms help you find shows or buy tickets.
+  onTour does not sell tickets. It does not resell tickets. It has no financial relationship with any ticketing platform.
 </p>
-
 <p class="abt-b">
-  <strong>onTour helps you approach ticketing differently.</strong>
-</p>
-
-<p class="abt-b">
-  It does not sell tickets. It does not resell tickets. It sits before the transaction — helping fans make better decisions before they enter the rush.
+  It is a free, independent intelligence layer — built for fans, not for the industry.
 </p>
 
 <div class="abt-div"></div>
@@ -1545,23 +1630,26 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
 <h3 class="abt-h">Why this matters</h3>
 
 <p class="abt-b">
-  Demand is not the problem. Distribution is.
+  Getting tickets to a superstar tour is genuinely hard. The math is brutal — demand regularly runs 10:1, 20:1, even 144:1 against available supply.
 </p>
-
 <p class="abt-b">
-  Fans tend to pile into the same markets at the same time, creating pressure and frustration while other opportunities may exist across the tour.
-</p>
-
-<p class="abt-b">
-  onTour helps guide that behavior before it concentrates.
+  That scarcity is real. But most fans enter the onsale with no read on the pressure, no map of their real options, and no plan for after.
 </p>
 
 <div class="abt-note">
-  <strong>We’re not changing ticketing — we’re changing how fans experience it, starting with how they enter it.</strong>
+  <strong>onTour changes that. Not the ticketing system — how fans navigate it.</strong>
 </div>
 
+<div class="abt-div"></div>
+
+<div style="font-size:11px;color:var(--text3);line-height:1.7;text-align:center;padding-bottom:8px">
+  onTour · Tour Ticket Intelligence™<br>
+  © 2026 Steve Warden · <a href="mailto:steve@ontourtv.com" style="color:var(--text3)">steve@ontourtv.com</a><br>
+  Prototype build · May 2026
+</div>
 
 </div>
+
 
 <!-- ALERT OPT-IN MODAL -->
 <div class="alert-ov" id="alertOv" aria-hidden="true">
@@ -1570,6 +1658,16 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
     <div class="alert-title">Get free tour intel and alerts</div>
     <div class="alert-copy" id="alertCopy">Save your home market so onTour can separate global official tour intel from local fan events near you. Alerts are strictly opt-in.</div>
     <div class="alert-form">
+      <div class="alert-section">
+        <div class="alert-label">Artists you follow</div>
+        <div class="alert-opt-sub" style="font-size:11px;color:var(--text2);margin-bottom:8px">Your top 3–5 artists — onTour will prioritize tour intelligence and alerts for these artists.</div>
+        <input class="alert-input" id="alertArtist1" placeholder="Artist #1 — e.g. Taylor Swift">
+        <input class="alert-input" id="alertArtist2" placeholder="Artist #2 — e.g. Harry Styles">
+        <input class="alert-input" id="alertArtist3" placeholder="Artist #3 — e.g. Olivia Rodrigo">
+        <input class="alert-input" id="alertArtist4" placeholder="Artist #4 — optional">
+        <input class="alert-input" id="alertArtist5" placeholder="Artist #5 — optional">
+      </div>
+
       <div class="alert-section">
         <div class="alert-label">Alert scope</div>
         <label class="alert-option">
@@ -1653,150 +1751,7 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
   <button class="inst-x" onclick="dismissInst()">×</button>
 </div>
 
-
-  <script>
-
-const PREVIEW_PASSWORD = "ontour-may";
-
-(function enforcePreviewPassword(){
-  if (localStorage.getItem("ontour_access_ok") === "true") return;
-
-  document.documentElement.innerHTML = `
-<head>
-  <title>onTour — Private Preview</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-  body{
-    margin:0;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#f0ebe1;
-    color:#1a1208;
-    font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
-    padding:24px;
-  }
-
-  .card{
-    width:100%;
-    max-width:380px;
-    background:#e8e2d6;
-    border:1px solid rgba(26,18,8,.15);
-    border-radius:20px;
-    padding:28px 22px;
-    text-align:center;
-  }
-
-  .brand{
-    font-size:30px;
-    font-weight:800;
-    margin-bottom:6px;
-  }
-
-  .brand .on{color:#1a6b3a;}
-  .brand .tour{font-style:italic;}
-
-  .tag{
-    font-size:12px;
-    letter-spacing:.12em;
-    text-transform:uppercase;
-    opacity:.6;
-    margin-bottom:18px;
-  }
-
-  h1{
-    font-size:20px;
-    margin:0 0 8px;
-  }
-
-  p{
-    font-size:13px;
-    opacity:.7;
-    margin:0 0 18px;
-    line-height:1.5;
-  }
-
-  input{
-    width:100%;
-    padding:12px;
-    border-radius:12px;
-    border:1px solid rgba(26,18,8,.2);
-    background:#f0ebe1;
-    font-size:14px;
-    margin-bottom:10px;
-  }
-
-  button{
-    width:100%;
-    padding:12px;
-    border:none;
-    border-radius:999px;
-    background:#1a6b3a;
-    color:#fff;
-    font-weight:800;
-    cursor:pointer;
-  }
-
-  .err{
-    font-size:12px;
-    color:#b5291c;
-    margin-top:10px;
-    min-height:16px;
-  }
-
-  .signal{
-    margin-top:18px;
-    font-size:11px;
-    opacity:.5;
-  }
-
-  .free-word{
-  color:var(--green) !important;
-  font-weight:900 !important;
-  font-size:18px !important;
-  line-height:1.3 !important;
-}
-
-</style>
-</head>
-
-<body>
-  <div class="card">
-    <div class="brand">
-      <span class="on">on</span><span class="tour">Tour</span>
-    </div>
-
-    <div class="tag">Private Preview</div>
-
-    <h1>Access required</h1>
-    <p>Enter password to continue</p>
-
-    <input id="pw" type="password" placeholder="Password" autocomplete="off">
-    <button onclick="checkPw()">Enter</button>
-
-    <div class="err" id="err"></div>
-
-    <div class="signal">Signal → Interpretation → Access</div>
-  </div>
-</body>
-`;
-
-  window.checkPw = function(){
-    const val = document.getElementById("pw").value;
-    if (val === PREVIEW_PASSWORD) {
-      localStorage.setItem("ontour_access_ok","true");
-      location.reload();
-    } else {
-      document.getElementById("err").innerText = "Wrong password";
-    }
-  };
-})();
-
-
-// 👇 YOUR EXISTING CODE CONTINUES BELOW
-
-
+<script>
 /* ═══════════ DATA ═══════════ */
 const PILLARS=[
   {id:'supply',cls:'p-red',icon:'📊',title:'Supply & demand math',sub:'The ratio no one publishes before the sale',
@@ -4021,7 +3976,7 @@ function renderTourSignal(tourId){
   `;
 }
 
-let savedMode='industry';try{savedMode=localStorage.getItem('ontourMode') || 'industry';}catch(e){}setMode(savedMode);
+let savedMode='fan';try{savedMode=localStorage.getItem('ontourMode') || 'fan';}catch(e){}setMode(savedMode);
 loadTourSignals().then(async()=>{
   await hydrateTicketmasterSignals();
   renderPillars();
@@ -4111,8 +4066,3 @@ if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.ser
 
 </body>
 </html>
-
-
-
-
-
