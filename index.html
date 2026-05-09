@@ -1807,6 +1807,80 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
           </div>
         </div>
       </div>
+      <div class="alert-section" id="premiumSection">
+        <div class="alert-label">Premium experience</div>
+        <div class="alert-opt-sub" style="font-size:11px;color:var(--text2);margin-bottom:2px">Would you consider a VIP or premium experience option — lounge access, reserved seating, elevated hospitality — if it were available for this show?</div>
+        <label class="alert-option">
+          <input type="radio" name="alertPremiumOpen" value="yes" onchange="onPremiumOpenChange(this)">
+          <div><div class="alert-opt-title">Yes</div></div>
+        </label>
+        <label class="alert-option">
+          <input type="radio" name="alertPremiumOpen" value="maybe" onchange="onPremiumOpenChange(this)">
+          <div><div class="alert-opt-title">Maybe</div></div>
+        </label>
+        <label class="alert-option">
+          <input type="radio" name="alertPremiumOpen" value="no" onchange="onPremiumOpenChange(this)">
+          <div><div class="alert-opt-title">No</div></div>
+        </label>
+        <div class="premium-drawer" id="premiumDrawer">
+          <div class="alert-section" style="margin-top:6px">
+            <div class="alert-label">Which would interest you?</div>
+            <div class="alert-opt-sub" style="font-size:11px;color:var(--text2);margin-bottom:4px">Pick any that apply.</div>
+            <div class="alert-chip-row" id="premiumTypeChips">
+              <span class="alert-chip" data-val="premium_seating" onclick="togglePremiumChip(this)">Premium seating</span>
+              <span class="alert-chip" data-val="vip_package" onclick="togglePremiumChip(this)">VIP package</span>
+              <span class="alert-chip" data-val="hospitality" onclick="togglePremiumChip(this)">Hospitality</span>
+              <span class="alert-chip" data-val="lounge_access" onclick="togglePremiumChip(this)">Lounge access</span>
+              <span class="alert-chip" data-val="meet_greet" onclick="togglePremiumChip(this)">Meet &amp; greet</span>
+              <span class="alert-chip" data-val="suite_or_box" onclick="togglePremiumChip(this)">Suite or box</span>
+              <span class="alert-chip" data-val="annual_membership" onclick="togglePremiumChip(this)">Annual membership</span>
+              <span class="alert-chip" data-val="premium_parking" onclick="togglePremiumChip(this)">Premium parking</span>
+            </div>
+          </div>
+          <div class="alert-section" style="margin-top:6px">
+            <div class="alert-label">Per-show spend ceiling</div>
+            <div class="alert-opt-sub" style="font-size:11px;color:var(--text2);margin-bottom:4px">How much above face value would you consider paying for the right premium option?</div>
+            <select class="alert-input" id="alertPremiumSpend">
+              <option value="">— select —</option>
+              <option value="t1">Up to $250</option>
+              <option value="t2">$250–$500</option>
+              <option value="t3">$500–$1,000</option>
+              <option value="t4">$1,000–$2,500</option>
+              <option value="t5">$2,500+</option>
+              <option value="depends">Depends on the artist or show</option>
+            </select>
+          </div>
+          <div class="alert-section" style="margin-top:6px">
+            <div class="alert-label">Annual VIP membership</div>
+            <div class="alert-opt-sub" style="font-size:11px;color:var(--text2);margin-bottom:4px">Would you consider an annual VIP membership at a venue you attend regularly?</div>
+            <label class="alert-option">
+              <input type="radio" name="alertAnnualMembership" value="yes" onchange="onMembershipChange(this)">
+              <div><div class="alert-opt-title">Yes</div></div>
+            </label>
+            <label class="alert-option">
+              <input type="radio" name="alertAnnualMembership" value="maybe" onchange="onMembershipChange(this)">
+              <div><div class="alert-opt-title">Maybe</div></div>
+            </label>
+            <label class="alert-option">
+              <input type="radio" name="alertAnnualMembership" value="no" onchange="onMembershipChange(this)">
+              <div><div class="alert-opt-title">No</div></div>
+            </label>
+            <div class="premium-drawer" id="membershipTierDrawer">
+              <div class="alert-section" style="margin-top:6px">
+                <div class="alert-label">At what tier?</div>
+                <select class="alert-input" id="alertMembershipTier">
+                  <option value="">— select —</option>
+                  <option value="m1">$500–$1,000 / year</option>
+                  <option value="m2">$1,000–$2,000 / year</option>
+                  <option value="m3">$2,000–$4,000 / year</option>
+                  <option value="m4">$4,000–$6,000 / year</option>
+                  <option value="m5">$6,000+ / year</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="alert-section">
         <div class="alert-label">Email or text alerts</div>
         <input class="alert-input" id="alertEmail" placeholder="Email ‚Äî e.g. fan@example.com" inputmode="email">
