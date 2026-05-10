@@ -391,7 +391,7 @@ html,body{background:var(--bg);color:var(--text);font-family:var(--sans);font-si
 .alert-input{width:100%;border:.5px solid var(--border2);background:var(--bg2);border-radius:10px;padding:10px 11px;font-family:var(--sans);font-size:13px;color:var(--text)}
 .alert-chip-row{display:flex;flex-wrap:wrap;gap:6px}.alert-chip{font-size:11px;font-weight:700;color:var(--text2);background:var(--bg2);border:.5px solid var(--border2);border-radius:20px;padding:4px 9px}
 .alert-chip.active{background:var(--green2);border-color:var(--greenb);color:var(--green);cursor:pointer}
-#premiumTypeChips .alert-chip{cursor:pointer}
+#premiumTypeChips .alert-chip,#travelMarketChips .alert-chip{cursor:pointer}
 .premium-drawer{overflow:hidden;max-height:0;transition:max-height .2s ease}.premium-drawer.open{max-height:1400px}
 .alert-consent{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;font-size:10px;line-height:1.45;color:var(--text3);margin-top:2px}
 .alert-consent input{margin-top:2px}
@@ -1699,8 +1699,15 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
       </div>
       <div class="alert-section">
         <div class="alert-label">Travel markets you’d consider</div>
-        <div class="alert-chip-row" aria-hidden="true"><span class="alert-chip">Toronto</span><span class="alert-chip">Vancouver</span><span class="alert-chip">Las Vegas</span><span class="alert-chip">London</span></div>
-        <input class="alert-input" id="alertTravelMarkets" placeholder="Optional — e.g. Toronto, Vegas, London">
+        <div class="alert-opt-sub" style="font-size:11px;color:var(--text2);margin-bottom:4px">Tap to add — or use “+ Other” to type your own.</div>
+        <div class="alert-chip-row" id="travelMarketChips">
+          <span class="alert-chip" data-val="Toronto" onclick="toggleTravelMarket(this)">Toronto</span>
+          <span class="alert-chip" data-val="Vancouver" onclick="toggleTravelMarket(this)">Vancouver</span>
+          <span class="alert-chip" data-val="Las Vegas" onclick="toggleTravelMarket(this)">Las Vegas</span>
+          <span class="alert-chip" data-val="London" onclick="toggleTravelMarket(this)">London</span>
+          <span class="alert-chip" data-other="1" onclick="focusTravelMarketInput()">+ Other</span>
+        </div>
+        <input class="alert-input" id="alertTravelMarkets" placeholder="Optional — comma-separated, e.g. Toronto, Vegas, London">
       </div>
       <div class="alert-section">
         <div class="alert-label">Would you travel for a better shot?</div>
@@ -1802,6 +1809,11 @@ body.mode-industry [data-mode-section="industry"],body.mode-fan [data-mode-secti
                   <option value="m4">$4,000–$6,000 / year</option>
                   <option value="m5">$6,000+ / year</option>
                 </select>
+              </div>
+              <div class="alert-section" style="margin-top:6px">
+                <div class="alert-label">Specific venues you’d join (optional)</div>
+                <div class="alert-opt-sub" style="font-size:11px;color:var(--text2);margin-bottom:4px">Helps onTour surface the right membership programs as venues roll them out in your markets.</div>
+                <input class="alert-input" id="alertMembershipVenues" placeholder="e.g. Scotiabank Arena, Madison Square Garden">
               </div>
             </div>
           </div>
@@ -2838,6 +2850,7 @@ function openAlertsModal(followId){
   if(email && localStorage.getItem('alert_email')) email.value=localStorage.getItem('alert_email');
   if(phone && localStorage.getItem('alert_phone')) phone.value=localStorage.getItem('alert_phone');
   if(travel && localStorage.getItem('alert_travel_markets')) travel.value=localStorage.getItem('alert_travel_markets');
+  syncTravelMarketChips();
   if(tripBudget && localStorage.getItem('alert_trip_budget')) tripBudget.value=localStorage.getItem('alert_trip_budget');
   const premiumOpen=localStorage.getItem('alert_premium_open');
   if(premiumOpen){const poi=document.querySelector('input[name="alertPremiumOpen"][value="'+premiumOpen+'"]');if(poi){poi.checked=true;onPremiumOpenChange(poi);}}
@@ -2849,6 +2862,8 @@ function openAlertsModal(followId){
   if(annualMembership){const ami=document.querySelector('input[name="alertAnnualMembership"][value="'+annualMembership+'"]');if(ami){ami.checked=true;onMembershipChange(ami);}}
   const membershipTier=localStorage.getItem('alert_membership_tier');
   const tierEl=document.getElementById('alertMembershipTier');if(membershipTier&&tierEl)tierEl.value=membershipTier;
+  const membershipVenues=localStorage.getItem('alert_membership_venues');
+  const venuesEl=document.getElementById('alertMembershipVenues');if(membershipVenues&&venuesEl)venuesEl.value=membershipVenues;
   if(err) err.textContent='';
   ov.classList.add('open');
   ov.setAttribute('aria-hidden','false');
@@ -2881,9 +2896,39 @@ function onMembershipChange(input){
   } else {
     drawer.classList.remove('open');
     const tier=document.getElementById('alertMembershipTier');if(tier)tier.value='';
+    const venues=document.getElementById('alertMembershipVenues');if(venues)venues.value='';
   }
 }
 function togglePremiumChip(chip){chip.classList.toggle('active');}
+function toggleTravelMarket(chip){
+  const input=document.getElementById('alertTravelMarkets');
+  if(!input) return;
+  const val=(chip.dataset.val||chip.textContent).trim();
+  const list=(input.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const idx=list.findIndex(s=>s.toLowerCase()===val.toLowerCase());
+  if(idx>=0){
+    list.splice(idx,1);
+    chip.classList.remove('active');
+  } else {
+    list.push(val);
+    chip.classList.add('active');
+  }
+  input.value=list.join(', ');
+}
+function focusTravelMarketInput(){
+  const input=document.getElementById('alertTravelMarkets');
+  if(input){input.focus();input.scrollIntoView({block:'nearest'});}
+}
+function syncTravelMarketChips(){
+  const input=document.getElementById('alertTravelMarkets');
+  if(!input) return;
+  const cur=(input.value||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+  document.querySelectorAll('#travelMarketChips .alert-chip').forEach(c=>{
+    if(c.dataset.other) return;
+    const v=(c.dataset.val||'').toLowerCase();
+    if(v && cur.includes(v)) c.classList.add('active'); else c.classList.remove('active');
+  });
+}
 
 function saveAlertOptIn(){
   const name=(document.getElementById('alertName')?.value||'').trim();
@@ -2901,6 +2946,7 @@ function saveAlertOptIn(){
   const premiumSpend=(document.getElementById('alertPremiumSpend')?.value||'');
   const annualMembership=(document.querySelector('input[name="alertAnnualMembership"]:checked')?.value||'');
   const membershipTier=(document.getElementById('alertMembershipTier')?.value||'');
+  const membershipVenues=(document.getElementById('alertMembershipVenues')?.value||'').trim();
   const err=document.getElementById('alertError');
   if(!city || (!email && !phone) || !consent){
     if(err) err.textContent='Please add a home market, email or mobile number, and consent before enabling alerts.';
@@ -2920,6 +2966,7 @@ function saveAlertOptIn(){
   if(premiumSpend) localStorage.setItem('alert_premium_spend',premiumSpend); else localStorage.removeItem('alert_premium_spend');
   if(annualMembership) localStorage.setItem('alert_annual_membership',annualMembership); else localStorage.removeItem('alert_annual_membership');
   if(membershipTier) localStorage.setItem('alert_membership_tier',membershipTier); else localStorage.removeItem('alert_membership_tier');
+  if(membershipVenues) localStorage.setItem('alert_membership_venues',membershipVenues); else localStorage.removeItem('alert_membership_venues');
   localStorage.setItem('alerts_enabled','1');
   localStorage.setItem('alerts_opted_in_at',new Date().toISOString());
   closeAlertsModal();
