@@ -3024,7 +3024,7 @@ function dismissInst(){document.getElementById('instBanner').classList.add('hidd
 
 
 /* ═══════════ TICKETMASTER DISCOVERY API — LIVE SIGNAL PIPELINE ═══════════ */
-const TICKETMASTER_API_KEY = '8JMzyTOgftXrOfZFXzhfguKKfQS1DtHx';
+const TICKETMASTER_API_KEY = ''; // key moved to Cloudflare Worker secret
 
 const TICKETMASTER_TOUR_KEYWORDS = {
   'styles-2026': 'Harry Styles',
@@ -4238,5 +4238,179 @@ if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.ser
 })();
 </script>
 
+
+<script>
+/* ── onTour Push Infrastructure ── added by patch_html.py ── */
+
+// Fill these in before deploying:
+const VAPID_PUBLIC_KEY = 'BByRsvbFrIVXDWPyTbke7uQ5-2mXOpmj1i8S3BmFoFIz3pbaBSHnY-_SKrsMne49V_-xcPxLkhZvkbWoKXVHLIs';
+const WORKER_BASE_URL  = (function() {
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    return 'http://localhost:8787';
+  return 'https://ontour-api.stephenwarden009.workers.dev';
+})();
+
+// Keyword → tourId map (mirrors Worker TOUR_MAP)
+const KEYWORD_TO_TOUR_ID = {
+  'Harry Styles': 'styles-2026',
+  'Rush':         'rush-2026',
+  'Bruno Mars':   'bruno-2026',
+};
+
+// Override fetchTicketmasterEvents to use Worker proxy instead of TM directly.
+// Same signature + return type — callers are unaffected.
+const _origFetchTM = typeof fetchTicketmasterEvents === 'function'
+  ? fetchTicketmasterEvents : null;
+
+window.fetchTicketmasterEvents = async function(keyword, opts = {}) {
+  const tourId = KEYWORD_TO_TOUR_ID[keyword];
+  if (!tourId) {
+    if (_origFetchTM) return _origFetchTM(keyword, opts);
+    return [];
+  }
+  const params = new URLSearchParams();
+  if (opts.city) params.set('city', opts.city);
+  if (opts.size) params.set('size', String(opts.size));
+  try {
+    const resp = await fetch(`${WORKER_BASE_URL}/api/tm/${tourId}?${params}`);
+    if (!resp.ok) throw new Error(`Worker ${resp.status}`);
+    const data = await resp.json();
+    return normalizeWorkerFeedResponse(data);
+  } catch (err) {
+    console.warn('[onTour] Worker proxy failed, trying direct TM:', err);
+    if (_origFetchTM) return _origFetchTM(keyword, opts);
+    return [];
+  }
+};
+
+// Unwrap Worker envelope — returns raw TM event array (same format as direct TM call).
+function normalizeWorkerFeedResponse(data) {
+  return data?.events || [];
+}
+
+// Convert VAPID public key (base64url) → Uint8Array for pushManager.subscribe
+function _vapidKeyToArray(b64u) {
+  const pad = '='.repeat((4 - b64u.length % 4) % 4);
+  const b64 = (b64u + pad).replace(/-/g, '+').replace(/_/g, '/');
+  return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+}
+
+// Core subscribe function — call with tourId array + intake field object.
+// Requests notification permission, creates push subscription, POSTs to Worker.
+async function subscribeToTourAlerts(followedTours, intakeData) {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    throw new Error('Push notifications are not supported in this browser.');
+  }
+  if (!VAPID_PUBLIC_KEY || VAPID_PUBLIC_KEY.startsWith('REPLACE')) {
+    throw new Error('VAPID_PUBLIC_KEY not configured — deploy Worker first.');
+  }
+
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') {
+    throw new Error('Notification permission denied.');
+  }
+
+  const reg = await navigator.serviceWorker.ready;
+  const subscription = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: _vapidKeyToArray(VAPID_PUBLIC_KEY),
+  });
+
+  const resp = await fetch(`${WORKER_BASE_URL}/api/subscribe`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      subscription:   subscription.toJSON(),
+      followed_tours: followedTours,
+      consented_at:   new Date().toISOString(),
+      ...intakeData,
+    }),
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error || `Subscribe failed (${resp.status})`);
+  }
+  return resp.json();
+}
+
+// Attach to window so the alerts modal handler can call it
+window.subscribeToTourAlerts = subscribeToTourAlerts;
+
+// ── Alerts modal: replace SMS/email copy with push-first copy ─────────────────
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Update label
+  const label = document.querySelector('.alert-label');
+  if (label && label.textContent.includes('text alerts')) {
+    label.textContent = 'Browser notifications';
+  }
+
+  // Hide phone field (SMS not active)
+  const phoneInput = document.getElementById('alertPhone');
+  if (phoneInput) {
+    phoneInput.style.display = 'none';
+    phoneInput.removeAttribute('required');
+  }
+
+  // Update email placeholder to reflect it's optional
+  const emailInput = document.getElementById('alertEmail');
+  if (emailInput) {
+    emailInput.placeholder = 'Email — optional, for future updates';
+  }
+
+  // Update consent text to remove SMS language
+  const consentSpan = document.querySelector('.alert-consent span');
+  if (consentSpan && consentSpan.textContent.includes('Message/data rates')) {
+    consentSpan.innerHTML = consentSpan.innerHTML
+      .replace(/Message\/data rates may apply[^<]*/gi, '')
+      .trim();
+  }
+
+  // Wire up the alerts modal submit to the push subscription flow.
+  // Looks for a submit button or form inside the alerts modal.
+  const alertModal  = document.getElementById('alertsModal') ||
+                      document.querySelector('.alerts-modal') ||
+                      document.querySelector('[id*="alert"]');
+  const submitBtn   = alertModal?.querySelector('button[type="submit"]') ||
+                      alertModal?.querySelector('.alert-submit') ||
+                      document.getElementById('alertSubmit');
+
+  if (submitBtn) {
+    submitBtn.addEventListener('click', async function(e) {
+      e.preventDefault();
+
+      // Gather followed tours from checked tour checkboxes (or fall back to all)
+      const checked = [...document.querySelectorAll('[data-tour-id]:checked, .tour-checkbox:checked')]
+        .map(el => el.dataset.tourId || el.value)
+        .filter(Boolean);
+      const followedTours = checked.length ? checked : Object.values(KEYWORD_TO_TOUR_ID);
+
+      const intakeData = {
+        name:       document.getElementById('alertName')?.value   || null,
+        home_city:  document.getElementById('alertCity')?.value   || null,
+        alert_scope: document.getElementById('alertScope')?.value || null,
+      };
+
+      try {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enabling alerts…';
+        await subscribeToTourAlerts(followedTours, intakeData);
+        submitBtn.textContent = '✓ Alerts enabled';
+        // Show confirmation if the app has a toast/status mechanism
+        if (typeof showToast === 'function') {
+          showToast('Alerts enabled. You'll be notified when something material changes.');
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enable alerts';
+        console.error('[onTour] Subscribe failed:', err);
+        alert('Could not enable alerts: ' + err.message);
+      }
+    }, { once: false });
+  }
+
+});
+</script>
 </body>
 </html>

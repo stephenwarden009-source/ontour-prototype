@@ -1,0 +1,11 @@
+name = "ontour-api"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+[triggers]
+crons = ["0 */4 * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ontour-db"
+database_id = "afb41de0-ac22-4849-a8b5-4582afe4e6dd"
