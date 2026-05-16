@@ -4337,14 +4337,8 @@ async function subscribeToTourAlerts(followedTours, intakeData) {
 // Attach to window so the alerts modal handler can call it
 window.subscribeToTourAlerts = subscribeToTourAlerts;
 
-// ── Alerts modal: replace SMS/email copy with push-first copy ─────────────────
+// ── Alerts modal: copy updates + saveAlertOptIn override ─────────────────────
 document.addEventListener('DOMContentLoaded', function() {
-
-  // Update label
-  const label = document.querySelector('.alert-label');
-  if (label && label.textContent.includes('text alerts')) {
-    label.textContent = 'Browser notifications';
-  }
 
   // Hide phone field (SMS not active)
   const phoneInput = document.getElementById('alertPhone');
@@ -4353,62 +4347,61 @@ document.addEventListener('DOMContentLoaded', function() {
     phoneInput.removeAttribute('required');
   }
 
-  // Update email placeholder to reflect it's optional
-  const emailInput = document.getElementById('alertEmail');
-  if (emailInput) {
-    emailInput.placeholder = 'Email — optional, for future updates';
+  // Update label
+  const label = document.querySelector('.alert-label');
+  if (label && label.textContent.includes('text alerts')) {
+    label.textContent = 'Browser notifications';
   }
 
-  // Update consent text to remove SMS language
+  // Remove SMS consent language
   const consentSpan = document.querySelector('.alert-consent span');
-  if (consentSpan && consentSpan.textContent.includes('Message/data rates')) {
+  if (consentSpan) {
     consentSpan.innerHTML = consentSpan.innerHTML
       .replace(/Message\/data rates may apply[^<]*/gi, '')
+      .replace(/Reply STOP to unsubscribe\./gi, '')
       .trim();
   }
 
-  // Wire up the alerts modal submit to the push subscription flow.
-  // Looks for a submit button or form inside the alerts modal.
-  const alertModal  = document.getElementById('alertsModal') ||
-                      document.querySelector('.alerts-modal') ||
-                      document.querySelector('[id*="alert"]');
-  const submitBtn   = alertModal?.querySelector('button[type="submit"]') ||
-                      alertModal?.querySelector('.alert-submit') ||
-                      document.getElementById('alertSubmit');
+  // Override saveAlertOptIn — the existing function handles validation + localStorage + modal close.
+  // We wrap it: let it run, then if it succeeded (alerts_enabled flag set), run push subscription.
+  const _origSaveAlertOptIn = window.saveAlertOptIn;
+  window.saveAlertOptIn = async function() {
+    // Clear any prior alerts_enabled so we can detect if original succeeds
+    const wasEnabled = localStorage.getItem('alerts_enabled');
+    localStorage.removeItem('alerts_enabled');
 
-  if (submitBtn) {
-    submitBtn.addEventListener('click', async function(e) {
-      e.preventDefault();
+    // Run original (validates, saves localStorage, closes modal, shows toast)
+    if (typeof _origSaveAlertOptIn === 'function') _origSaveAlertOptIn();
 
-      // Gather followed tours from checked tour checkboxes (or fall back to all)
-      const checked = [...document.querySelectorAll('[data-tour-id]:checked, .tour-checkbox:checked')]
-        .map(el => el.dataset.tourId || el.value)
-        .filter(Boolean);
-      const followedTours = checked.length ? checked : Object.values(KEYWORD_TO_TOUR_ID);
+    // If original validation failed, alerts_enabled won't be set — bail out
+    if (localStorage.getItem('alerts_enabled') !== '1') {
+      if (wasEnabled) localStorage.setItem('alerts_enabled', wasEnabled); // restore
+      return;
+    }
 
-      const intakeData = {
-        name:       document.getElementById('alertName')?.value   || null,
-        home_city:  document.getElementById('alertCity')?.value   || null,
-        alert_scope: document.getElementById('alertScope')?.value || null,
-      };
+    // Original succeeded — now run push subscription
+    const followedTours = Object.values(KEYWORD_TO_TOUR_ID); // all tours for now
+    const intakeData = {
+      name:              localStorage.getItem('alert_name')          || null,
+      home_city:         localStorage.getItem('alert_city')          || null,
+      alert_scope:       localStorage.getItem('alert_scope')         || null,
+      travel_markets:    localStorage.getItem('alert_travel_markets')|| null,
+      travel_mode:       localStorage.getItem('alert_travel_mode')   || null,
+      package_open:      localStorage.getItem('alert_package_open')  || null,
+      trip_budget:       localStorage.getItem('alert_trip_budget')   || null,
+    };
 
-      try {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Enabling alerts…';
-        await subscribeToTourAlerts(followedTours, intakeData);
-        submitBtn.textContent = '✓ Alerts enabled';
-        // Show confirmation if the app has a toast/status mechanism
-        if (typeof showToast === 'function') {
-          showToast('Alerts enabled. You'll be notified when something material changes.');
-        }
-      } catch (err) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Enable alerts';
-        console.error('[onTour] Subscribe failed:', err);
-        alert('Could not enable alerts: ' + err.message);
+    try {
+      await subscribeToTourAlerts(followedTours, intakeData);
+    } catch (err) {
+      console.error('[onTour] Push subscription failed:', err);
+      // Non-fatal — user still opted in, alerts_enabled is set
+      // Show a note that push failed
+      if (typeof showToast === 'function') {
+        showToast('Alerts saved', 'Note: browser notification permission was not granted.');
       }
-    }, { once: false });
-  }
+    }
+  };
 
 });
 </script>
