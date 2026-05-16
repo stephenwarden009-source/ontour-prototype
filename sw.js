@@ -1,4 +1,4 @@
-const CACHE = 'ontour-v18';
+const CACHE = 'ontour-v19';
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const ASSETS = [
   `${BASE}/`,
@@ -66,11 +66,21 @@ self.addEventListener('push', event => {
 self.addEventListener('notificationclick', event => {
   event.notification.close();
   const url = event.notification.data?.url || BASE + '/';
+
+  // Clear app badge so the count resets when user taps the notification
+  if ('clearAppBadge' in self.registration) {
+    self.registration.clearAppBadge().catch(() => {});
+  }
+
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then(windowClients => {
-        const existing = windowClients.find(c => c.url === url && 'focus' in c);
-        if (existing) return existing.focus();
+        // Find any existing app window and navigate it to the full notif URL (with params)
+        const existing = windowClients.find(c => 'navigate' in c);
+        if (existing) {
+          existing.navigate(url);
+          return existing.focus();
+        }
         return clients.openWindow(url);
       })
   );

@@ -4405,5 +4405,111 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 </script>
+
+<!-- ── onTour: notification open handler + "what's new" banner ── -->
+<style>
+/* What's New banner — shown at top of tour page when opened from a push notification */
+.wnb{background:var(--green2);border:.5px solid var(--greenb);border-radius:12px;padding:12px 14px;margin:0 0 14px;animation:wnb-in .22s ease}
+@keyframes wnb-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.wnb-inner{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.wnb-kicker{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--green);margin-bottom:3px}
+.wnb-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.35}
+.wnb-ts{font-size:11px;color:var(--text3);margin-top:3px}
+.wnb-dismiss{background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:0 0 0 4px;line-height:1;flex-shrink:0;margin-top:1px}
+.wnb-dismiss:hover{color:var(--text)}
+/* Green dot on tour card to signal pending update */
+.notif-dot{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:var(--green);color:#fff;border-radius:999px;padding:2px 6px;margin-right:5px;vertical-align:middle}
+</style>
+
+<script>
+/* ── onTour: notification-open context handler ── */
+(function () {
+  // Always clear app badge on load (whether or not opened from a notification)
+  if ('clearAppBadge' in navigator) navigator.clearAppBadge().catch(function () {});
+
+  var params = new URLSearchParams(location.search);
+  if (!params.get('notif')) return;
+
+  var tourId     = params.get('tourId')     || '';
+  var changeType = params.get('changeType') || '';
+  var ts         = parseInt(params.get('ts') || '0') || Date.now();
+
+  // Clean ?notif params from URL without reloading
+  history.replaceState({}, '', location.pathname);
+
+  if (!tourId) return;
+
+  var CHANGE_LABELS = {
+    new_date:      { kicker: 'New Date Added',         title: 'A new tour date was added since your last visit.' },
+    status_change: { kicker: 'Ticket Status Changed',  title: 'Ticket availability has changed.' },
+    onsale_change: { kicker: 'On-Sale Date Confirmed', title: 'A presale or on-sale window was confirmed.' },
+  };
+  var label = CHANGE_LABELS[changeType] || { kicker: 'Tour Update', title: 'Something changed since your last visit.' };
+
+  var ago = Date.now() - ts;
+  var tsStr = ago < 90000   ? 'Just now'
+    : ago < 3600000  ? Math.round(ago / 60000)  + 'm ago'
+    : ago < 86400000 ? Math.round(ago / 3600000) + 'h ago'
+    : new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  window._notifContext = { tourId: tourId, changeType: changeType, label: label, tsStr: tsStr };
+
+  // Add update dot to matching tour cards once they render
+  function addNotifDots() {
+    document.querySelectorAll('.tc').forEach(function (card) {
+      if (!card.innerHTML.includes(tourId)) return;
+      if (card.querySelector('.notif-dot')) return;
+      var dot = document.createElement('span');
+      dot.className = 'notif-dot';
+      dot.textContent = 'Update';
+      var eye = card.querySelector('.tc-eye');
+      if (eye) eye.prepend(dot);
+    });
+  }
+
+  // Wrap openTour — inject "what's new" banner when user lands on the notified tour page
+  var _origOpenTour = window.openTour;
+  window.openTour = function (id) {
+    _origOpenTour && _origOpenTour(id);
+    var ctx = window._notifContext;
+    if (!ctx || id !== ctx.tourId) return;
+
+    // Remove update dots now that user has navigated to the tour
+    document.querySelectorAll('.notif-dot').forEach(function (d) { d.remove(); });
+
+    var tabCnt = document.getElementById('tabCnt');
+    if (!tabCnt || document.getElementById('whatsNewBanner')) return;
+
+    var banner = document.createElement('div');
+    banner.id = 'whatsNewBanner';
+    banner.className = 'wnb';
+    banner.innerHTML =
+      '<div class="wnb-inner">' +
+        '<div>' +
+          '<div class="wnb-kicker">&#x26A1; ' + escapeHTML(ctx.label.kicker) + '</div>' +
+          '<div class="wnb-title">'  + escapeHTML(ctx.label.title)  + '</div>' +
+          '<div class="wnb-ts">'     + escapeHTML(ctx.tsStr)         + '</div>' +
+        '</div>' +
+        '<button class="wnb-dismiss" onclick="document.getElementById(\'whatsNewBanner\').remove();window._notifContext=null;" aria-label="Dismiss">&#x2715;</button>' +
+      '</div>';
+    tabCnt.prepend(banner);
+    banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
+  // Dots after tour cards render; then auto-open the relevant tour page
+  function init() {
+    setTimeout(addNotifDots, 500);
+    setTimeout(function () {
+      var ctx = window._notifContext;
+      if (!ctx) return;
+      var tourScreen = document.getElementById('screen-tour');
+      if (tourScreen && tourScreen.classList.contains('active')) return;
+      if (typeof window.openTour === 'function') window.openTour(ctx.tourId);
+    }, 1100);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+}());
+</script>
 </body>
 </html>
