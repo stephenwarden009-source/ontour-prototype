@@ -1,4 +1,4 @@
-const CACHE = 'ontour-v17';
+const CACHE = 'ontour-v18';
 const BASE = self.location.pathname.replace(/\/sw\.js$/, '');
 const ASSETS = [
   `${BASE}/`,
@@ -47,12 +47,16 @@ self.addEventListener('fetch', event => {
 
 // --- Push notification handler ---
 self.addEventListener('push', event => {
-  const data = event.data?.json() ?? {};
+  let data = {};
+  try { data = event.data?.json() ?? {}; } catch (e) {
+    data = { body: event.data?.text() || 'New update from onTour' };
+  }
+  console.log('[sw] push received:', data);
   event.waitUntil(
     self.registration.showNotification(data.title || 'onTour', {
-      body:  data.body  || '',
-      icon:  data.icon  || `${BASE}/icons/icon-192.png`,
-      badge: `${BASE}/icons/icon-192.png`,
+      body:  data.body  || 'You have a new tour update.',
+      icon:  `${BASE}/icon-192.png`,
+      badge: `${BASE}/icon-192.png`,
       tag:   data.tag   || 'ontour-default',
       data:  { url: data.url || BASE + '/' },
     })
